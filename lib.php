@@ -12,10 +12,16 @@ class enrol_saml_plugin extends enrol_plugin {
      * @param object $instance (null is accepted too)
      * @return string
      */
+
+
     public function get_instance_name($instance) {
+      // Data manipulation API - https://docs.moodle.org/dev/Data_manipulation_API#DB_object
+      // 
+      //Para hacer que el objeto DB esté disponible en nuestro ámbito local, como dentro de una función:
         global $DB;
 
         if (empty($instance->name)) {
+          // Tiene roleid y
             if (!empty($instance->roleid) and $role = $DB->get_record('role', array('id'=>$instance->roleid))) {
                 $context = context_course::instance($instance->courseid);
                 $role = ' (' . role_get_name($role, $context) . ')';
@@ -25,6 +31,8 @@ class enrol_saml_plugin extends enrol_plugin {
             $enrol = $this->get_name();
             return get_string('pluginname', 'enrol_'.$enrol) . $role;
         } else {
+          //https://docs.moodle.org/dev/Output_functions
+          //Función para imprimir cualquier  html / plain / markdown / moodle texto
             return format_string($instance->name);
         }
     }
@@ -164,7 +172,7 @@ class enrol_saml_plugin extends enrol_plugin {
     public function sync_user_enrolments($user) {
         // Configuration is in the auth/saml config file. (Not in the enrol/saml)
         $pluginconfig = get_config('auth/saml');
-        
+
         global $DB, $SAML_COURSE_INFO, $err;
 
         if($pluginconfig->supportcourses != 'nosupport' ) {
@@ -174,7 +182,7 @@ class enrol_saml_plugin extends enrol_plugin {
             }
             try {
                   $plugin = enrol_get_plugin('saml');
-              foreach($SAML_COURSE_INFO->mapped_roles as $role) {		       
+              foreach($SAML_COURSE_INFO->mapped_roles as $role) {
                   $moodle_role = $DB->get_record("role", array("shortname" =>$role));
                   if($moodle_role) {
                       $new_course_ids_with_role = array();
@@ -204,9 +212,9 @@ class enrol_saml_plugin extends enrol_plugin {
                                   $err['enrollment'][] = get_string("error_instance_creation", "role_saml", $role, $course->id);
                               }
                               else {
-                                  $plugin->enrol_user($instance, $user->id, $moodle_role->id, 0, 0, 0); // last parameter (status) 0->active  1->suspended                        
+                                  $plugin->enrol_user($instance, $user->id, $moodle_role->id, 0, 0, 0); // last parameter (status) 0->active  1->suspended
                               }
-                          }    
+                          }
                       }
                   }
                   else {

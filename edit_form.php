@@ -26,15 +26,25 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+// formslib.php es una api para crear formularios de Moodle. Ahi novedades!!!!!!
+// https://docs.moodle.org/dev/lib/formslib.php_Usage
 require_once($CFG->libdir.'/formslib.php');
 
 class enrol_saml_edit_form extends moodleform {
 
+  // La definición de los elementos a incluir en el formulario.
+  //https://docs.moodle.org/dev/lib/formslib.php_Form_Definition
     function definition() {
         $mform = $this->_form;
 
+        //Asigna los elementos del array a las variables, $instance, $plugin, $context
+        //_customdata https://moodle.org/mod/forum/discuss.php?d=331414&parent=1334183
+        // No se inicializa en este plugin aqui (en edit.php).
         list($instance, $plugin, $context) = $this->_customdata;
 
+// Add elements to your form
+        // get_string - String api
+        // Devuelve un string para el usuario actual. https://docs.moodle.org/dev/String_API#get_string.28.29
         $mform->addElement('header', 'header', get_string('pluginname', 'enrol_saml'));
 
         $options = array(ENROL_INSTANCE_ENABLED  => get_string('yes'),

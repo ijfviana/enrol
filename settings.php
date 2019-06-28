@@ -25,6 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+//este formulario aparece al instalar el modulo
+//https://docs.moodle.org/dev/Admin_settings
 if ($ADMIN->fulltree) {
 
     //--- general settings -----------------------------------------------------------------------------------

@@ -23,13 +23,29 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+ //Todos los plugin de Moodle tiene este archivo
+ //Access API
+
+ //The Access API gives you functions so you can determine what the current user is allowed to do.
+ //It also allows modules to extend Moodle with new capabilities.
+ //https://docs.moodle.org/dev/Access_API
+
+// Cualquier archivo php en su complemento será accesible al navegador o ser áe un archivo interno.
+//Para archivos internos
 defined('MOODLE_INTERNAL') || die();
+
+
 
 $capabilities = array(
 
+    // El nombre de la capacidad.
     'enrol/saml:config' => array(
+      //tipo de capacidad: escritura
         'captype' => 'write',
+      //Declara el nivel de contexto donde se verifica esta capacidad.
         'contextlevel' => CONTEXT_COURSE,
+      //especifica valores predeterminados para roles con arquetipos estándar. https://docs.moodle.org/dev/Role_archetypes
+      //manager: Los usuarios con capacidad de moodle/course:view  pueden acceder al curso en el que no están inscritos. No pueden participar.
         'archetypes' => array(
             'manager' => CAP_ALLOW,
         )

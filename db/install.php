@@ -25,7 +25,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+//xmldb es la biblioteca de código que permite a Moodle interactuar con la base de datos y acceder a ella.
 function xmldb_enrol_saml_install() {
+  // variable de config
     global $CFG;
 
     // migrate settings
