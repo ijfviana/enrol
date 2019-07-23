@@ -15,18 +15,31 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Self enrolment plugin settings and presets.
+ * Library of enrol_saml.
  *
  * @package    enrol
  * @subpackage saml
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die();
-
-function xmldb_enrol_saml_install() {
-    global $CFG;
-
-    // Migrate settings.
-
+class admin_setting_configtext_enrol_trim extends admin_setting_configtext {
+    public function write_setting($data) {
+        if ($this->paramtype === PARAM_INT and $data === '') {
+        // do not complain if '' used instead of 0
+            $data = 0;
+        }
+        // clean
+        $data = explode(",", $data);
+        foreach ($data as $key => $value) {
+            $data[$key] = trim($value);
+        }
+        $data = array_unique($data);
+        $data = implode(",", $data);
+        
+        // $data is a string
+        $validated = $this->validate($data);
+        if ($validated !== true) {
+            return $validated;
+        }
+        return ($this->config_write($this->name, $data) ? '' : get_string('errorsetting', 'admin'));
+    }
 }

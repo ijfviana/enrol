@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -40,6 +39,8 @@ $string['status_desc'] = 'Allow course access of internally enrolled users. This
 $string['status_help'] = 'This setting determines whether users can be auto-enrolled via saml login.';
 $string['statusenabled'] = 'Enabled';
 $string['statusdisabled'] = 'Disabled';
+$string['logfile'] = 'Log file';
+$string['logfile_description'] = 'If file defined, enrollment info of courses and groups will be stored. (Use an absolute path or Moodle will save this file in the moodledata folder).';
 $string['unenrolselfconfirm'] = 'Do you really want to unenrol yourself from course "{$a}"?';
 $string['unenroluser'] = 'Do you really want to unenrol "{$a->user}" from course "{$a->course}"?';
 $string['unenrolusers'] = 'Unenrol users';
@@ -47,3 +48,7 @@ $string['wscannotenrol'] = 'SAML plugin instance cannot enrol a user in the cour
 $string['wsnoinstance'] = 'SAML enrolment plugin instance doesn\'t exist or is disabled for the course (id = {$a->courseid})';
 $string['wsusercannotassign'] = 'You don\'t have the permission to assign this role ({$a->roleid}) to this user ({$a->userid}) in this course({$a->courseid}).';
 $string['error_instance_creation'] = 'Exists an inactive instance of this SAML plugin for this course "{$a}", activate it instead create new one';
+$string['group_prefix'] = 'Prefix for managed groups';
+$string['group_prefix_description'] = 'Define a prefix if you want that the extension only manages groups that matches the prefix. Leave it blank to manage all. Multi-valued field comma separated';
+$string['created_group_info'] = 'Description for new groups';
+$string['created_group_info_description'] = 'Set in this field the text that will be used for the description of new groups created by the extension';
