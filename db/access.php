@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -34,55 +33,49 @@
 //Para archivos internos
 defined('MOODLE_INTERNAL') || die();
 
+$capabilities = [
 
-
-$capabilities = array(
-
-    // El nombre de la capacidad.
-    'enrol/saml:config' => array(
-      //tipo de capacidad: escritura
+    'enrol/saml:config' => [
         'captype' => 'write',
       //Declara el nivel de contexto donde se verifica esta capacidad.
         'contextlevel' => CONTEXT_COURSE,
-      //especifica valores predeterminados para roles con arquetipos estándar. https://docs.moodle.org/dev/Role_archetypes
-      //manager: Los usuarios con capacidad de moodle/course:view  pueden acceder al curso en el que no están inscritos. No pueden participar.
-        'archetypes' => array(
+        'archetypes' => [
             'manager' => CAP_ALLOW,
-        )
-    ),
+        ]
+    ],
 
-    'enrol/saml:enrol' => array(
+    'enrol/saml:enrol' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
+        'archetypes' => [
             'manager' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-        )
-    ),
+        ]
+    ],
 
-    'enrol/saml:manage' => array(
+    'enrol/saml:manage' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
+        'archetypes' => [
             'manager' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-        )
-    ),
+        ]
+    ],
 
-    'enrol/saml:unenrol' => array(
+    'enrol/saml:unenrol' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
+        'archetypes' => [
             'manager' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-        )
-    ),
+        ]
+    ],
 
-    'enrol/saml:unenrolself' => array(
+    'enrol/saml:unenrolself' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
-        )
-    ),
+        'archetypes' => [
+        ]
+    ],
 
-);
+];

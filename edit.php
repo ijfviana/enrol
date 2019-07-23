@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -29,23 +28,16 @@ require_once('edit_form.php');
 // required_param significa que el parámetro debe existir (o Moodle arrojará un error inmediato y fatal).
 $courseid = required_param('courseid', PARAM_INT);
 
-// Return a single database record as an object where all the given conditions are met.
-// Novedades en https://docs.moodle.org/dev/Data_manipulation_API
-$course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
+$course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
 $context = context_course::instance($course->id, MUST_EXIST);
 
 require_login($course);
 require_capability('enrol/saml:config', $context);
 
-//Page API
-//no hay $PAGE->set_context
-$PAGE->set_url('/enrol/saml/edit.php', array('courseid' => $course->id));
-//page base theme
+$PAGE->set_url('/enrol/saml/edit.php', ['courseid' => $course->id]);
 $PAGE->set_pagelayout('admin');
 
-//Create new instance of moodle_url.
-$return = new moodle_url('/enrol/instances.php', array('id' => $course->id));
-//Checks if a given plugin is in the list of enabled enrolment plugins.
+$return = new moodle_url('/enrol/instances.php', ['id' => $course->id]);
 if (!enrol_is_enabled('saml')) {
     //Redirects the user to another page, after printing a notice.
     redirect($return);
@@ -53,24 +45,26 @@ if (!enrol_is_enabled('saml')) {
 
 $plugin = enrol_get_plugin('saml');
 
-if ($instances == $DB->get_records('enrol', ['courseid' => $course->id, 'enrol' => 'saml'], 'id ASC')) {
+if ($instances = $DB->get_records('enrol', ['courseid' => $course->id, 'enrol' => 'saml'], 'id ASC')) {
     $instance = array_shift($instances);
     if ($instances) {
-        // oh - we allow only one instance per course!!
+        // Oh - we allow only one instance per course!!
         foreach ($instances as $del) {
             $plugin->delete_instance($del);
         }
     }
 } else {
     require_capability('moodle/course:enrolconfig', $context);
-    // no instance yet, we have to add new instance
-    navigation_node::override_active_url(new moodle_url('/enrol/instances.php', array('id' => $course->id)));
+    // No instance yet, we have to add new instance.
+    navigation_node::override_active_url(
+        new moodle_url('/enrol/instances.php', ['id' => $course->id])
+    );
     $instance = new stdClass();
     $instance->id = null;
     $instance->courseid = $course->id;
 }
 
-$mform = new enrol_saml_edit_form(NULL, array($instance, $plugin, $context));
+$mform = new enrol_saml_edit_form(null, [$instance, $plugin, $context]);
 
 if ($mform->is_cancelled()) {
     redirect($return);
@@ -82,7 +76,11 @@ if ($mform->is_cancelled()) {
         $instance->timemodified = time();
         $DB->update_record('enrol', $instance);
     } else {
-        $fields = array('status' => $data->status, 'enrolperiod' => $data->enrolperiod, 'roleid' => $data->roleid);
+        $fields = [
+            'status' => $data->status,
+            'enrolperiod' => $data->enrolperiod,
+            'roleid' => $data->roleid
+        ];
         $plugin->add_instance($course, $fields);
     }
 

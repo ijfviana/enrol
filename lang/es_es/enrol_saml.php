@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -40,6 +39,8 @@ $string['status_desc'] = 'Permitir acceder al curso a los usuarios internamente 
 $string['status_help'] = 'Esta configuración determina la forma en que los usuarios serán matriculados vía SAML.';
 $string['statusenabled'] = 'Habilitado';
 $string['statusdisabled'] = 'Deshabilitado';
+$string['logfile'] = 'Fichero de log';
+$string['logfile_description'] = 'Si se define, información acerca de la matriculación en cursos y grupos será almacenada en el log. (Establece una ruta absoluta o Moodle guardará este fichero dentro de la carpeta moodledata).';
 $string['unenrolselfconfirm'] = '¿Realmente desea desmatricularse del curso "{$a}"?';
 $string['unenroluser'] = '¿Realmente desea desmatricular al usuario "{$a->user}" del curso "{$a->course}"?';
 $string['unenrolusers'] = 'Desmatricular usuarios';
@@ -47,3 +48,7 @@ $string['wscannotenrol'] = 'La instancia del plugin de matriculación SAML no pu
 $string['wsnoinstance'] = 'La instancia del plugin de matriculación SAML no existe o está deshabilitado para el curso (id = {$a->courseid})';
 $string['wsusercannotassign'] = 'No tienes permisos para asignar este rol ({$a->roleid}) al usuario ({$a->userid}) en este curso ({$a->courseid}).';
 $string['error_instance_creation'] = 'Existe una instancia inactiva del plugin de SAML para el curso "{$a}", actívala en lugar de crear una instancia nueva';
+$string['group_prefix'] = 'Prefijo para grupos manipulados';
+$string['group_prefix_description'] = 'Define un prefijo si quieres que la extensión únicamente manipule aquellos grupos que tengan dicho prefijo. Deja el campo en blanco para manapular cualquier grupo. Campo multi-valor separados por comas';
+$string['created_group_info'] = 'Descripción para nuevos grupos';
+$string['created_group_info_description'] = 'Establece en este campo el texto que será asociado a la descripción de los grupos creados por la extensión';
