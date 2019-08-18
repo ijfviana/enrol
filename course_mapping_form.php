@@ -12,37 +12,36 @@ require_once('locallib.php');
 require_once('course.php');
 require_once($CFG->libdir . '/formslib.php');
 
-
 class course_mapping_editadvanced_form extends moodleform {
 
     protected function definition() {
-        global $DB;
 
         $mform = $this->_form;
 
-        list($instance, $plugin, $context) = $this->_customdata;
         //$strgeneral = get_string('general');
-
         // Print the required moodle fields first.
         //$mform->addElement('header', 'moodle', $strgeneral);
 
         $courses = get_all_courses_available();
 
 
-        
+
 
         $c_shortname = array_column($courses, 'shortname');
 
 
-        $mform->addElement('select', 'course_moodle', get_string('course_moodle', 'enrol_saml'), $c_shortname);
+        //$mform->addElement('select', 'course_moodle', get_string('course_moodle', 'enrol_saml'), $c_shortname);
+        //$mform->addHelpButton('status', 'status', 'enrol_saml');
+
+        $mform->addElement('autocomplete', 'course_moodle', get_string('course_moodle', 'enrol_saml'), $c_shortname);
         $mform->addHelpButton('status', 'status', 'enrol_saml');
 
-        
+
 
         $mform->addElement('text', 'saml_id', get_string('saml_id'), 'size="20"');
         $mform->addHelpButton('username', 'username', 'auth');
         https://docs.moodle.org/dev/lib/formslib.php_Form_Definition#Most_Commonly_Used_PARAM_.2A_Types
-        $mform->setType('saml_id', PARAM_RAW);
+        $mform->setType('saml_id', PARAM_INT);
 
 
 
@@ -70,16 +69,22 @@ class course_mapping_editadvanced_form extends moodleform {
         $new_mapping = (object) $data;
         //$course_mapping    = $DB->get_record('course_mapping', array('saml_id' => $new_mapping->saml_id));
 
-        $select = $DB->sql_equal('saml_id', ':saml_id', false);
+        if ($new_mapping->saml_id == 0) {
+            $errors['course_mapping'] = get_string('nosamlid');
+        }
+
+
+
+        $new_mapping->course_moodle = + 2;
 
         $params = array(
             'saml_id' => $new_mapping->saml_id
         );
         // If there are other coursemapping(s) that already have the same samlid, show an error.
-        if ($DB->record_exists_select('course_mapping', $select, $params)) {
+        if ($DB->record_exists_sql('SELECT * FROM {course_mapping} WHERE saml_id = :saml_id', $params)) {
             $errors['course_mapping'] = get_string('coursemappingexists');
         }
-        
+
         return $errors;
     }
 

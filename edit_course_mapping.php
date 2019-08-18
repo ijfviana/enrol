@@ -1,96 +1,79 @@
 <?php
 
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
+// No se puede acceder si no hay courses
 require('../../config.php');
 require_once('course_mapping_form.php');
+require_once('locallib.php');
+require_once($CFG->libdir . '/adminlib.php');
+require_once($CFG->libdir . '/authlib.php');
 
 
-/*
-$courseid = optional_param('courseid', PARAM_INT);
+$mappingid = optional_param('mappingid', 0, PARAM_INT);
 
-$course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
-$context = context_course::instance($course->id, MUST_EXIST);
+global $DB;
+//require_login($course);
+//require_capability('enrol/saml:config', $context);
 
-require_login($course);
-require_capability('enrol/saml:config', $context);
-
-$PAGE->set_url('/enrol/saml/edit_course_mapping.php', ['courseid' => $course->id]);
+$PAGE->set_url('/enrol/saml/edit_course_mapping.php', ['mappingid' => $mappingid]);
 $PAGE->set_pagelayout('admin');
+$PAGE->set_context(context_system::instance()); // SYSTEM context.
 
-$return = new moodle_url('/enrol/settings.php', ['id' => $course->id]);
+$return = new moodle_url('/enrol/saml/course_mapping.php');
+
 if (!enrol_is_enabled('saml')) {
     //Redirects the user to another page, after printing a notice.
     redirect($return);
 }
 
-$plugin = enrol_get_plugin('saml');
 
-if ($instances = $DB->get_records('enrol', ['courseid' => $course->id, 'enrol' => 'saml'], 'id ASC')) {
-    $instance = array_shift($instances);
-    if ($instances) {
-        // Oh - we allow only one instance per course!!
-        foreach ($instances as $del) {
-            $plugin->delete_instance($del);
-        }
-    }
-} else {
-    require_capability('moodle/course:enrolconfig', $context);
-    // No instance yet, we have to add new instance.
-    navigation_node::override_active_url(
-        new moodle_url('/enrol/instances.php', ['id' => $course->id])
-    );
-    $instance = new stdClass();
-    $instance->id = null;
-    $instance->courseid = $course->id;
-}*/
-
-$return = new moodle_url('/');
-global $DB;
-
-$mform = new course_mapping_editadvanced_form(null, [$instance, $plugin, $context]);
+$mform = new course_mapping_editadvanced_form(null);
 
 //$mform->set_data($toform);
 
 
 if ($mform->is_cancelled()) {
     redirect($return);
-} else if ($fromform  = $mform->get_data()) {
-    
-    $timecreated = time();
-    /*$courses = get_courses();
-    $id = null;
-    
-    foreach($courses as $course){
-        if($course->shortname == $fromform->course_moodle){
-            $id=$course->id;
-        }
-    }*/
-    
+} else if ($fromform = $mform->get_data()) {
 
-    
+    $time = time();
+
+    $courses = get_all_courses_available();
+    if (!$mappingid) { //New Course Mapping
         $fields = [
             'saml_id' => $fromform->saml_id,
-            'course_id' => $fromform->course_moodle + 1,
+            //select devuelve un numero del 0 al ...
+            //ponemos el id del curso al que le corresponda esa posición
+            'course_id' => $courses[$fromform->course_moodle + 2]->id,
             'active' => $fromform->active,
             'blocked' => $fromform->blocked,
             'source' => 0,
-            'creation' => $timecreated
-            
+            'creation' => $time
         ];
         //new entry in course_mapping table
         $DB->insert_record('course_mapping', $fields);
+    } else {  //Edit Course Mapping
+        global $DB;
+        $mapping = $DB->get_record('course_mapping', ['id' => $mappingid], '*', MUST_EXIST);
 
-    
+
+        $mapping['saml_id'] = $fromform->saml_id;
+        $mapping['course_id'] = $courses[$fromform->course_moodle + 2]->id;
+        $mapping['active'] = $fromform->active;
+        $mapping['blocked'] = $fromform->blocked;
+        $mapping['modified'] = $time;
+        update_course_mapping($mapping);
+    }
+
     redirect($return);
 }
-/*
-$PAGE->set_title(get_string('pluginname', 'enrol_saml'));
-$PAGE->set_heading($course->fullname);
-*/
+
+
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('pluginname', 'enrol_saml'));
 $mform->display();

@@ -111,4 +111,53 @@ if ($ADMIN->fulltree) {
             )
         );
     }
+    
+    $name = 'auth_saml/supportcourses';
+    $title = get_string('auth_saml_supportcourses', 'auth_saml');
+    $description = get_string('auth_saml_supportcourses_description', 'auth_saml');
+    $default = "nosupport";
+    $choices = [
+        "nosupport" => "nosupport",
+        "internal" => "internal",
+        "external" => "external"
+    ];
+    $setting = new admin_setting_configselect($name, $title, $description, $default, $choices);
+    $settings->add($setting);
+    
+
+    
+    
+    $settings->add(
+        new admin_setting_heading(
+            'enrol_saml/coursemapping',
+            new lang_string('auth_saml_coursemapping', 'enrol_saml'),
+            new lang_string('auth_saml_coursemapping_head', 'enrol_saml')
+        )
+    );
+    
+    $courses = get_courses();
+
+    
+    if (!empty($courses)) {
+
+        
+    
+        $settings->add(
+            new enrol_saml_admin_setting_special_link(
+                'enrol_saml/check_mapping',
+                new lang_string('check_mapping', 'enrol_saml'),
+                $CFG->wwwroot.'/enrol/saml/course_mapping.php'
+            )
+        );
+        
+        $settings->add(
+            new enrol_saml_admin_setting_special_link(
+                'enrol_saml/edit_mapping',
+                new lang_string('edit_mapping', 'enrol_saml'),
+                $CFG->wwwroot.'/enrol/saml/edit_course_mapping.php'
+            )
+        );
+    }
+    
+
 }

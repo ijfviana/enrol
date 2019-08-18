@@ -15,8 +15,6 @@ function get_all_courses_available() {
     return $courses;
 }
 
-
-
 function get_all_course_mapping() {
 
     global $DB;
@@ -24,7 +22,17 @@ function get_all_course_mapping() {
     return $courses;
 }
 
+function delete_course_mapping($course) {
 
+    global $DB;
+    return $DB->delete_records('course_mapping', ['id' => $course->id]);
+}
+
+function update_course_mapping($course) {
+
+    global $DB;
+    return $DB->update_record('course_mapping', $course);
+}
 
 function internal_course_mapping() {
     if ($config->supportcourses == 'internal') {
