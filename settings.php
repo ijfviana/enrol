@@ -157,6 +157,14 @@ if ($ADMIN->fulltree) {
                 $CFG->wwwroot.'/enrol/saml/edit_course_mapping.php'
             )
         );
+        
+        $settings->add(
+            new enrol_saml_admin_setting_special_link(
+                'enrol_saml/coursemapping_export',
+                new lang_string('mapping_export', 'enrol_saml'),
+                $CFG->wwwroot.'/enrol/saml/course_mappings_to_csv.php'
+            )
+        );
     }
     
 
