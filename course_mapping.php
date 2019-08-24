@@ -7,7 +7,7 @@
  */
 
 require('../../config.php');
-require_once('course.php');
+
 require_once('locallib.php');
 require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->libdir . '/authlib.php');
@@ -60,11 +60,12 @@ $course = null;
 if ($confirmuser) {
     
 } else if ($delete) {              // Delete a selected course mapping, after confirmation
-    $course = $DB->get_record('course_mapping', ['id' => $delete], '*', MUST_EXIST);
+    $course_mapping = $DB->get_record('course_mapping', ['id' => $delete], '*', MUST_EXIST);
+    $course = $DB->get_record('course', ['id' => $course_mapping->course_id], '*', MUST_EXIST);
 
     if ($confirm != md5($delete)) {
         echo $OUTPUT->header();
-        $name = $course->fullname;
+        $name = $course->shortname;
         echo $OUTPUT->heading(get_string('deleteuser', 'admin'));
 
         $optionsyes = array('delete' => $delete, 'confirm' => md5($delete));
@@ -77,13 +78,13 @@ if ($confirmuser) {
         echo $OUTPUT->footer();
         die;
     } else if (data_submitted()) {
-        if (delete_course_mapping($course)) {
+        if (delete_course_mapping($course_mapping)) {
 
             redirect($returnurl);
         } else {
 
             echo $OUTPUT->header();
-            echo $OUTPUT->notification($returnurl, get_string('deletednot', '', $course->fullname));
+            echo $OUTPUT->notification($returnurl, get_string('deletednot', '', $course->shortname));
         }
     }
 } else if ($suspend) {
@@ -148,8 +149,7 @@ if (!$courses) {
     $table = new html_table();
     $table->head = array();
     $table->colclasses = array();
-    //$table->head[] = $fullnamedisplay;
-    //$table->attributes['class'] = 'admintable generaltable';
+
 
     $table->head[] = get_string('saml_id');
 

@@ -9,7 +9,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once('locallib.php');
-require_once('course.php');
+//https://docs.moodle.org/dev/lib/formslib.php_Form_Definition#Passing_parameters_to_the_Form
 require_once($CFG->libdir . '/formslib.php');
 
 class course_mapping_editadvanced_form extends moodleform {
@@ -22,8 +22,7 @@ class course_mapping_editadvanced_form extends moodleform {
         // Print the required moodle fields first.
         //$mform->addElement('header', 'moodle', $strgeneral);
 
-        $courses = get_all_courses_available();
-
+        $courses = $this->_customdata['courses'];
 
 
 
@@ -58,7 +57,7 @@ class course_mapping_editadvanced_form extends moodleform {
 
         $this->add_action_buttons(get_string('savechanges'));
 
-        //$this->set_data();
+        $this->set_data($this->_customdata['courses']);
     }
 
     function validation($data, $files) {

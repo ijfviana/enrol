@@ -15,6 +15,21 @@ function get_all_courses_available() {
     return $courses;
 }
 
+function get_courses_not_mapped($courseid=null) {
+
+    global $DB;
+    if (!empty($courseid)) { // Edit course mapping with this id
+        $query = "SELECT id, idnumber, shortname from {course} as c WHERE NOT EXISTS( 
+    SELECT * FROM {course_mapping} as m WHERE c.id = m.course_id and c.id != '" . $courseid . "') AND c.id !=" . SITEID;
+    } else { // New course mapping
+        $query = "SELECT id, idnumber, shortname from {course} as c WHERE NOT EXISTS( 
+    SELECT * FROM {course_mapping} as m WHERE c.id = m.course_id) AND c.id !=" . SITEID;
+    }
+
+    $courses = $DB->get_records_sql($query);
+    return $courses;
+}
+
 function get_all_course_mapping() {
 
     global $DB;
