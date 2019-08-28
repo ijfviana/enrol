@@ -217,7 +217,7 @@ class enrol_saml_plugin extends enrol_plugin {
 
         global $DB, $SAML_COURSE_INFO, $err;
 
-        if ($samlpluginconfig->supportcourses != 'nosupport') {
+        if ($enrolpluginconfig->supportcourses != 'nosupport') {
             if (!isset($samlpluginconfig->moodlecoursefieldid)) {
                 $samlpluginconfig->moodlecoursefieldid = 'shortname';
             }

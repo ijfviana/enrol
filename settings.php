@@ -127,21 +127,23 @@ if ($ADMIN->fulltree) {
 
     
     
-    $settings->add(
+        $settings->add(
         new admin_setting_heading(
-            'enrol_saml/coursemapping',
+            'auth_saml/coursemapping',
             new lang_string('auth_saml_coursemapping', 'enrol_saml'),
             new lang_string('auth_saml_coursemapping_head', 'enrol_saml')
         )
     );
     
     $courses = get_courses();
+    
 
     
-    if (!empty($courses)) {
+    if (!empty($courses) && get_config('enrol_saml')->supportcourses != 'nosupport') {
 
         
     
+        
         $settings->add(
             new enrol_saml_admin_setting_special_link(
                 'enrol_saml/check_mapping',
@@ -160,9 +162,17 @@ if ($ADMIN->fulltree) {
         
         $settings->add(
             new enrol_saml_admin_setting_special_link(
-                'enrol_saml/coursemapping_export',
+                'enrol_saml/mapping_export',
                 new lang_string('mapping_export', 'enrol_saml'),
                 $CFG->wwwroot.'/enrol/saml/course_mappings_to_csv.php'
+            )
+        );
+        
+        $settings->add(
+            new enrol_saml_admin_setting_special_link(
+                'enrol_saml/mapping_import',
+                new lang_string('mapping_import', 'enrol_saml'),
+                $CFG->wwwroot.'/enrol/saml/csv_to_course_mapping.php'
             )
         );
     }
