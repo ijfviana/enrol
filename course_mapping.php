@@ -105,24 +105,6 @@ if ($confirmuser) {
         }
     }
     redirect($returnurl);
-} else if ($lock) {
-    if ($course = $DB->get_record('course_mapping', ['id' => $lock])) {
-        if ($course->active != 0) {
-            $course->active = 0;
-
-            update_course_mapping($course);
-        }
-    }
-    redirect($returnurl);
-} else if ($unlock) {
-    if ($course = $DB->get_record('course_mapping', ['id' => $unlock])) {
-        if ($course->active != 1) {
-            $course->active = 1;
-
-            update_course_mapping($course);
-        }
-    }
-    redirect($returnurl);
 }
 
 echo $OUTPUT->header();
@@ -207,7 +189,8 @@ if (!$courses) {
         $row = [];
         $row[] = $course->saml_id;
         $row[] = $course->course_id;
-        $row[] = $course->active;
+        $status = get_saml_enrol_status($course);
+        $row[] = $status;
         $row[] = $course->blocked;
         $row[] = $course->source;
         $row[] = $course->creation;

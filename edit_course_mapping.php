@@ -64,7 +64,6 @@ if ($mform->is_cancelled()) {
             //select devuelve un numero del 0 al ...
             //ponemos el id del curso al que le corresponda esa posición
             'course_id' => $keys[$fromform->course_moodle],
-            'active' => $fromform->active,
             'blocked' => $fromform->blocked,
             'source' => 0,
             'creation' => $time
@@ -79,7 +78,6 @@ if ($mform->is_cancelled()) {
 
         $mapping->saml_id = $fromform->saml_id;
         $mapping->course_id = $keys[$fromform->course_moodle];
-        $mapping->active = $fromform->active;
         $mapping->blocked = $fromform->blocked;
         $mapping->modified = $time;
         update_course_mapping($mapping);

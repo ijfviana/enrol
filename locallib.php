@@ -15,7 +15,7 @@ function get_all_courses_available() {
     return $courses;
 }
 
-function get_courses_not_mapped($courseid=null) {
+function get_courses_not_mapped($courseid = null) {
 
     global $DB;
     if (!empty($courseid)) { // Edit course mapping with this id
@@ -40,7 +40,7 @@ function get_all_course_mapping() {
 function get_all_course_mapping_custom() {
 
     global $DB;
-    $query = "SELECT saml_id, course_id, active, blocked, creation, modified from {course_mapping}";
+    $query = "SELECT saml_id, course_id, blocked, creation, modified from {course_mapping}";
     $courses = $DB->get_records_sql($query);
     return $courses;
 }
@@ -55,4 +55,15 @@ function update_course_mapping($course) {
 
     global $DB;
     return $DB->update_record('course_mapping', $course);
+}
+
+function get_saml_enrol_status($course) {
+
+    global $DB;
+
+    $select = 'course_id = :course_id AND enrol = :enrol AND status = :status' ;
+    // status = 0, means enrol instance is active. table {enrol}
+    $params = ['course_id' => $course->id, 'enrol' => "saml", 'status' => 0];
+
+    return $DB->record_exists_select('enrol', $select, $params);
 }

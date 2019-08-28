@@ -124,16 +124,25 @@ if ($ADMIN->fulltree) {
     $setting = new admin_setting_configselect($name, $title, $description, $default, $choices);
     $settings->add($setting);
     
+    
+    $name = 'auth_saml/ignoreinactivecourses';
+    $title = get_string('auth_saml_ignoreinactivecourses', 'auth_saml');
+    $description = get_string('auth_saml_ignoreinactivecourses_description', 'auth_saml');
+    $default = true;
+    $setting = new admin_setting_configcheckbox($name, $title, $description, $default, true, false);
+    $settings->add($setting);
+    
+    
+    
 
     
     
-        $settings->add(
-        new admin_setting_heading(
-            'auth_saml/coursemapping',
-            new lang_string('auth_saml_coursemapping', 'enrol_saml'),
-            new lang_string('auth_saml_coursemapping_head', 'enrol_saml')
-        )
-    );
+    $settings->add(
+    new admin_setting_heading(
+        'auth_saml/coursemapping',
+        new lang_string('auth_saml_coursemapping', 'enrol_saml'),
+        new lang_string('auth_saml_coursemapping_head', 'enrol_saml')
+    ));
     
     $courses = get_courses();
     

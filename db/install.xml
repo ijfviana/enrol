@@ -17,7 +17,6 @@
         <FIELD NAME="id" TYPE="int" LENGTH="18" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="saml_id" TYPE="int" LENGTH="20" NOTNULL="true" DEFAULT="666" SEQUENCE="false"/>
         <FIELD NAME="course_id" TYPE="int" LENGTH="20" NOTNULL="true" DEFAULT="666" SEQUENCE="false"/>
-        <FIELD NAME="active" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="blocked" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="source" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="creation" TYPE="char" LENGTH="20" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>

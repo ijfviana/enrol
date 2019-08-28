@@ -44,12 +44,6 @@ class course_mapping_editadvanced_form extends moodleform {
 
 
 
-        $mform->addElement('advcheckbox', 'active', get_string('active', 'enrol_saml'), 'Mapeo activo');
-        $mform->addHelpButton('active', 'active', 'enrol_saml');
-
-
-
-
         $mform->addElement('advcheckbox', 'blocked', get_string('blocked', 'enrol_saml'), 'Mapeo bloqueado');
         $mform->addHelpButton('blocked', 'blocked', 'enrol_saml');
         //$mform->setDefault('status', $plugin->get_config('status'));
