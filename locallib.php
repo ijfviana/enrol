@@ -6,6 +6,8 @@
  * and open the template in the editor.
  */
 
+//namespace enrol_saml\coursemappinglib;
+
 function get_all_courses_available() {
     /* return get_courses(); */
 
@@ -61,9 +63,24 @@ function get_saml_enrol_status($course) {
 
     global $DB;
 
-    $select = 'course_id = :course_id AND enrol = :enrol AND status = :status' ;
+    $select = 'courseid = :course_id AND enrol = :enrol AND status = :status' ;
     // status = 0, means enrol instance is active. table {enrol}
-    $params = ['course_id' => $course->id, 'enrol' => "saml", 'status' => 0];
+    $saml='saml';
+    $params = ['course_id' => $course->course_id, 'enrol' => $saml, 'status' => 0];
 
     return $DB->record_exists_select('enrol', $select, $params);
+}
+
+function get_some_course_mapping($limitfrom, $limitnum){
+    
+    global $DB;
+    $courses = $DB->get_records('course_mapping',null, '','*', $limitfrom, $limitnum);
+    return $courses;
+}
+
+function course_mapping_count(){
+    
+    global $DB;
+    $count = $DB->count_records('course_mapping');
+    return $count;
 }

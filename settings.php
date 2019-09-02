@@ -112,9 +112,9 @@ if ($ADMIN->fulltree) {
         );
     }
     
-    $name = 'auth_saml/supportcourses';
-    $title = get_string('auth_saml_supportcourses', 'auth_saml');
-    $description = get_string('auth_saml_supportcourses_description', 'auth_saml');
+    $name = 'enrol_saml/supportcourses';
+    $title = get_string('enrol_saml_supportcourses', 'enrol_saml');
+    $description = get_string('enrol_saml_supportcourses_description', 'enrol_saml');
     $default = "nosupport";
     $choices = [
         "nosupport" => "nosupport",
@@ -125,12 +125,39 @@ if ($ADMIN->fulltree) {
     $settings->add($setting);
     
     
-    $name = 'auth_saml/ignoreinactivecourses';
-    $title = get_string('auth_saml_ignoreinactivecourses', 'auth_saml');
-    $description = get_string('auth_saml_ignoreinactivecourses_description', 'auth_saml');
+    $name = 'enrol_saml/ignoreinactivecourses';
+    $title = get_string('enrol_saml_ignoreinactivecourses', 'enrol_saml');
+    $description = get_string('enrol_saml_ignoreinactivecourses_description', 'enrol_saml');
     $default = true;
     $setting = new admin_setting_configcheckbox($name, $title, $description, $default, true, false);
     $settings->add($setting);
+    
+    
+    $options = array('', "access", "ado_access", "ado", "ado_mssql", "borland_ibase", "csv", "db2", "fbsql", "firebird", "ibase", "informix72", "informix", "mssql", "mssql_n", "mssqlnative", "mysql", "mysqli", "mysqlt", "oci805", "oci8", "oci8po", "odbc", "odbc_mssql", "odbc_oracle", "oracle", "pdo", "postgres64", "postgres7", "postgres", "proxy", "sqlanywhere", "sybase", "vfp");
+    $options = array_combine($options, $options);
+    $settings->add(new admin_setting_configselect('enrol_saml/dbtype', get_string('dbtype', 'enrol_saml'), get_string('dbtype_desc', 'enrol_saml'), '', $options));
+
+    $settings->add(new admin_setting_configtext('enrol_saml/dbhost', get_string('dbhost', 'enrol_saml'), get_string('dbhost_desc', 'enrol_saml'), 'localhost'));
+
+    $settings->add(new admin_setting_configtext('enrol_saml/dbuser', get_string('dbuser', 'enrol_saml'), '', ''));
+
+    $settings->add(new admin_setting_configpasswordunmask('enrol_saml/dbpass', get_string('dbpass', 'enrol_saml'), '', ''));
+
+    $settings->add(new admin_setting_configtext('enrol_saml/dbname', get_string('dbname', 'enrol_saml'), get_string('dbname_desc', 'enrol_saml'), ''));
+
+    $settings->add(new admin_setting_configtext('enrol_saml/dbencoding', get_string('dbencoding', 'enrol_saml'), '', 'utf-8'));
+    
+    $options = [
+        "noupdate" => "noupdate",
+        "update" => "update"
+    ];
+    $settings->add(new admin_setting_configselect('enrol_saml/updatemappings', get_string('updatemappings', 'enrol_saml'), get_string('updatemappings_desc', 'enrol_saml'), 0, $options));
+    
+    $options = [
+        "ignore" => "ignore",
+        "notactive" => "notactive"
+    ];
+    $settings->add(new admin_setting_configselect('enrol_saml/externalmappings', get_string('externalmappings', 'enrol_saml'), get_string('externalmappings_desc', 'enrol_saml'), 0, $options));
     
     
     
@@ -147,8 +174,8 @@ if ($ADMIN->fulltree) {
     $courses = get_courses();
     
 
-    
-    if (!empty($courses) && get_config('enrol_saml')->supportcourses != 'nosupport') {
+    $pluginconfig = get_config('enrol_saml');
+    if (!empty($courses) && $pluginconfig->supportcourses != 'nosupport') {
 
         
     

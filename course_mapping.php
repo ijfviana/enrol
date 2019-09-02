@@ -34,8 +34,14 @@ $unlock = optional_param('unlock', 0, PARAM_INT);
 $PAGE->set_url('/enrol/saml/course_mapping.php');
 $PAGE->set_pagelayout('admin');
 
+
 $sitecontext = context_system::instance();
 $site = get_site();
+
+if (!is_siteadmin()) {
+    die('Only admins can execute this action.');
+}
+
 
 if (!has_capability('enrol/saml:config', $sitecontext)) {
     print_error('nopermissions', 'error', '', 'edit/edit course mappings');
@@ -54,6 +60,7 @@ $strconfirm = get_string('confirm');
 
 
 $returnurl = new moodle_url('/enrol/saml/course_mapping.php', array('sort' => $sort, 'dir' => $dir, 'perpage' => $perpage, 'page' => $page));
+
 
 $course = null;
 
@@ -113,10 +120,11 @@ echo $OUTPUT->header();
 $context = context_system::instance();
 
 
-$courses = get_all_course_mapping();
+$courses = get_some_course_mapping($page*$perpage, $perpage);
+$coursescount = course_mapping_count();
 
 $baseurl = new moodle_url('/enrol/saml/course_mapping.php', array('sort' => $sort, 'dir' => $dir, 'perpage' => $perpage));
-echo $OUTPUT->paging_bar(count($courses), $page, $perpage, $baseurl);
+echo $OUTPUT->paging_bar($coursescount, $page, $perpage, $baseurl);
 
 flush();
 
@@ -158,9 +166,10 @@ if (!$courses) {
 
         $buttons = [];
 
+        
 
         // suspend button
-        if (has_capability('enrol/saml:config', $sitecontext)) {
+        if (has_capability('enrol/saml:config', $sitecontext) && !$course->source) {
             if ($course->blocked) {
                 $url = new moodle_url($returnurl, array('unsuspend' => $course->id));
                 $buttons[] = html_writer::link($url, $OUTPUT->pix_icon('t/show', $strunsuspend));
@@ -170,26 +179,32 @@ if (!$courses) {
                 $buttons[] = html_writer::link($url, $OUTPUT->pix_icon('t/hide', $strsuspend));
 
                 // edit button
-                if (has_capability('enrol/saml:config', $sitecontext)) {
+
                     $url = new moodle_url('/enrol/saml/edit_course_mapping.php', array('mappingid' => $course->id));
                     $buttons[] = html_writer::link($url, $OUTPUT->pix_icon('t/edit', $stredit));
-                }
+                
                 // delete button
-                if (has_capability('enrol/saml:config', $sitecontext)) {
+  
 
                     $url = new moodle_url($returnurl, array('delete' => $course->id));
                     $buttons[] = html_writer::link($url, $OUTPUT->pix_icon('t/delete', $strdelete));
-                }
+                
             }
         }
 
 
+        
+        if (get_saml_enrol_status($course)) {
+            $status = get_string('active');
+        }else{
+            $status = get_string('inactive');
+        }
 
 
         $row = [];
         $row[] = $course->saml_id;
         $row[] = $course->course_id;
-        $status = get_saml_enrol_status($course);
+
         $row[] = $status;
         $row[] = $course->blocked;
         $row[] = $course->source;
@@ -209,11 +224,12 @@ if (!$courses) {
 }
 
 
-
-echo html_writer::start_tag('div', array('class' => 'no-overflow'));
-echo html_writer::table($table);
-echo html_writer::end_tag('div');
-echo $OUTPUT->paging_bar(count($courses), $page, $perpage, $baseurl);
+if (!empty($table)) {
+    echo html_writer::start_tag('div', array('class' => 'no-overflow'));
+    echo html_writer::table($table);
+    echo html_writer::end_tag('div');
+    echo $OUTPUT->paging_bar($coursescount, $page, $perpage, $baseurl);
+}
 
 echo $OUTPUT->footer();
 
