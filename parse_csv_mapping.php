@@ -45,7 +45,8 @@ class mapping_parser {
      * @global moodle_page $PAGE
      * @global core_renderer $OUTPUT
      */
-    public function execute() {
+    public function execute($context) {
+
 
         global $DB;
 
@@ -57,6 +58,7 @@ class mapping_parser {
         ];
 
 
+
         // Loop over the CSV lines.
         while ($line = $this->cir->next()) {
             $this->linenb++;
@@ -64,19 +66,30 @@ class mapping_parser {
 
 
             $data = $this->parse_line($line);
-            if (!empty($data['saml_id']) && !empty($data['course_id'])) {
+            if (!empty($data['saml_id']) && !empty($data['course_id']) && $data['course_id'] != SITEID) {
 
-                if ($this->exists($data) && $mapping = $DB->get_record('course_mapping', ['course_id' => $data['course_id']])) {
+                if ($this->exists($data) && $mapping = $DB->get_record('course_mapping', ['saml_id' => $data['saml_id']])) {
 
-                    if ($this->mode) {
+                    //can not modify external source
+                    if ($this->mode || !$mapping->source) {
 
                         $data['modified'] = time();
 
 
                         $data['id'] = $mapping->id;
-                        update_course_mapping($data);
-                        $result["updated"] += 1;
+                        if (update_course_mapping($data)) {
+                            $result["updated"] += 1;
+                            $entry = "Updated Course id " . $data['course_id'] . " SAML id " . $data['saml_id'] . " course mapping";
+                            // Trigger an event for creating this field.
+                            $this->events($entry, $context);
+                        } else {
+                            $errors = "Course id " . $data['course_id'] . " can not be updated";
+                            $this->events($errors, $context);
+                        }
                     } else {
+
+                        $entry = "Ignored Course id " . $data['course_id'] . " SAML id " . $data['saml_id'] . " course mapping";
+                        $this->events($entry, $context);
 
                         $result["ignored"] += 1;
                     }
@@ -84,18 +97,28 @@ class mapping_parser {
 
                     if ($DB->record_exists('course', ['id' => $data['course_id']])) {
 
-
-
                         $data['creation'] = time();
-                        $result["created"] += 1;
                         $data['source'] = (int) 0;
                         //new entry in course_mapping table
-                        $DB->insert_record('course_mapping', $data);
+                        if ($DB->insert_record('course_mapping', $data)) {
+                            $result["created"] += 1;
+                            $entry = "Created Course id " . $data['course_id'] . " SAML id " . $data['saml_id'] . " course mapping";
+                            $this->events($entry, $context);
+                        } else {
+                            $errors = "Course id " . $data['course_id'] . " can not be inserted";
+                            $this->events($errors, $context);
+                        }
                     } else {
+
+                        $errors = "Course id " . $data['course_id'] . " does not exist";
+                        $this->events($errors, $context);
                         $result["errors"] += 1;
                     }
                 }
             } else {
+
+                $errors = "Entry missing parameters";
+                $this->events($errors, $context);
                 $result["errors"] += 1;
             }
         }
@@ -166,15 +189,6 @@ class mapping_parser {
     }
 
     /**
-     * Return the data that will be used upon saving.
-     *
-     * @return null|array
-     */
-    public function get_data() {
-        return $this->data;
-    }
-
-    /**
      * Return the errors found during preparation.
      *
      * @return array
@@ -198,11 +212,22 @@ class mapping_parser {
      * @return boolean
      */
     public function result_to_string($result) {
-        $res[] = null;
+        $res = null;
         foreach ($result as $key => $value) {
-            $res[] = $key . ' (' . $value . ')';
+            $res = $res . '  '. $key . ' (' . $value . ')';
         }
+
         return $res;
+    }
+
+    function events($entry, $context) {
+
+
+        $event = \enrol_saml\event\import_event::create(array(
+                    'other' => $entry,
+                    'context' => $context
+        ));
+        $event->trigger();
     }
 
 }

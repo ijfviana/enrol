@@ -34,7 +34,7 @@ defined('MOODLE_INTERNAL') || die();
  * @package    auth_saml
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class auth_saml_admin_setting_javascript extends admin_setting_heading {
+class enrol_saml_admin_setting_javascript extends admin_setting_heading {
     public function __construct() {
         $this->nosave = true;
         parent::__construct('javascript', '', '', '');
@@ -44,23 +44,25 @@ class auth_saml_admin_setting_javascript extends admin_setting_heading {
         return "
             <script>
                 function hide_or_not_courses() {
-                    var value = document.getElementById('id_s_auth_saml_supportcourses').value;
+                    var value = document.getElementById('id_s_enrol_saml_supportcourses').value;
 
-                    document.getElementById('admin-courses').style.display = (value == 'internal') ? 'flex' : 'none';
-                    document.getElementById('admin-ignoreinactivecourses').style.display = (value == 'internal') ? 'flex' : 'none';
+                    document.getElementById('admin-courses').style.display = (value != 'nosupport') ? 'flex' : 'none';
+                    document.getElementById('admin-ignoreinactivecourses').style.display = (value != 'nosupport') ? 'flex' : 'none';
+                    
+                    document.getElementById('admin-dbtype').style.display = (value == 'external') ? 'flex' : 'none';
+                    document.getElementById('admin-dbhost').style.display = (value == 'external') ? 'flex' : 'none';
+                    document.getElementById('admin-dbuser').style.display = (value == 'external') ? 'flex' : 'none';
+                    document.getElementById('admin-dbpass').style.display = (value == 'external') ? 'flex' : 'none';
+                    document.getElementById('admin-dbname').style.display = (value == 'external') ? 'flex' : 'none';
+                    document.getElementById('admin-dbencoding').style.display = (value == 'external') ? 'flex' : 'none';
+                    document.getElementById('admin-updatemappings').style.display = (value == 'external') ? 'flex' : 'none';
+                    document.getElementById('admin-externalmappings').style.display = (value == 'external') ? 'flex' : 'none';
 
-                    var courseMappings = document.querySelectorAll('[id^=\"admin-course_mapping_\"]');
-                    for (var i = 0; i < courseMappings.length; i++) {
-                        if (i == 0) {
-                            courseMappings[i].previousSibling.style.display = (value == 'internal') ? 'flex' : 'none';
-                            courseMappings[i].previousSibling.previousSibling.previousSibling.style.display = (value == 'internal') ? 'flex' : 'none';
-                        }
-                        courseMappings[i].style.display = (value == 'internal') ? 'flex' : 'none';
-                    }
+
                 }
 
 
-                document.getElementById('id_s_auth_saml_supportcourses').addEventListener(
+                document.getElementById('id_s_enrol_saml_supportcourses').addEventListener(
                 'change', hide_or_not_courses
                 );
 

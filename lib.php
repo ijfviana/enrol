@@ -210,7 +210,7 @@ class enrol_saml_plugin extends enrol_plugin {
 
         if ($enrolpluginconfig->supportcourses != 'nosupport') {
             if (!isset($samlpluginconfig->moodlecoursefieldid)) {
-                $samlpluginconfig->moodlecoursefieldid = 'shortname';
+                $samlpluginconfig->moodlecoursefieldid = 'id';
             }
             try {
                 $plugin = enrol_get_plugin('saml');

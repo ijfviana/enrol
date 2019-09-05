@@ -23,7 +23,7 @@ class csv_to_mapping_form extends moodleform {
         $mform->addElement('filepicker', 'userfile', get_string('file'), null, 
                 array('accepted_types' => '.csv'));
         $mform->addRule('userfile', null, 'required');
-        $mform->addHelpButton('userfile', 'coursefile', 'enrol_saml');
+        $mform->addHelpButton('userfile', 'mappingfile', 'enrol_saml');
         
         
         $choices = csv_import_reader::get_delimiter_list();
@@ -44,13 +44,13 @@ class csv_to_mapping_form extends moodleform {
         $mform->addHelpButton('encoding', 'encoding', 'tool_uploadcourse');
         
         
-        $choices = [get_string('ignore_mapping'),
-            get_string('update_mapping')];
+        $choices = [get_string('ignore_mapping','enrol_saml'),
+            get_string('update_mapping','enrol_saml')];
         $mform->addElement('select', 'mode', get_string('mode', 'tool_uploadcourse'), $choices);
         $mform->addHelpButton('mode', 'mode', 'tool_uploadcourse');
         
         
-        $this->add_action_buttons(false, get_string('preview', 'tool_uploadcourse'));
+        $this->add_action_buttons(false, get_string('import','enrol_saml'));
     }
 
 }

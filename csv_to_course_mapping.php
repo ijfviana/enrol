@@ -59,15 +59,20 @@ if ($mform->is_cancelled()) {
     $mode = $fromform->mode;
     $parser = new mapping_parser($cir, $mode);
 
-    $result = $parser->execute();
-
+    $result = $parser->execute($PAGE->context);
 
     echo $OUTPUT->notification($parser->result_to_string($result));
+
+
+
+
+
+    //echo $OUTPUT->confirm($returnurl, get_string('confirm'));
 
     redirect($returnurl);
 }
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('pluginname', 'enrol_saml'));
+echo $OUTPUT->heading(get_string('importmapping', 'enrol_saml'));
 $mform->display();
 echo $OUTPUT->footer();

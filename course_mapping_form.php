@@ -33,12 +33,12 @@ class course_mapping_editadvanced_form extends moodleform {
         //$mform->addHelpButton('status', 'status', 'enrol_saml');
 
         $mform->addElement('autocomplete', 'course_moodle', get_string('course_moodle', 'enrol_saml'), $c_shortname);
-        $mform->addHelpButton('status', 'status', 'enrol_saml');
+        $mform->addHelpButton('course_moodle', 'course_moodle', 'enrol_saml');
 
 
 
-        $mform->addElement('text', 'saml_id', get_string('saml_id'), 'size="20"');
-        $mform->addHelpButton('username', 'username', 'auth');
+        $mform->addElement('text', 'saml_id', get_string('saml_id', 'enrol_saml'), 'size="20"');
+        $mform->addHelpButton('saml_id', 'saml_id', 'enrol_saml');
         https://docs.moodle.org/dev/lib/formslib.php_Form_Definition#Most_Commonly_Used_PARAM_.2A_Types
         $mform->setType('saml_id', PARAM_INT);
 
@@ -63,19 +63,7 @@ class course_mapping_editadvanced_form extends moodleform {
         //$course_mapping    = $DB->get_record('course_mapping', array('saml_id' => $new_mapping->saml_id));
 
         if ($new_mapping->saml_id == 0) {
-            $errors['course_mapping'] = get_string('nosamlid');
-        }
-
-
-
-        $new_mapping->course_moodle = + 2;
-
-        $params = array(
-            'saml_id' => $new_mapping->saml_id
-        );
-        // If there are other coursemapping(s) that already have the same samlid, show an error.
-        if ($DB->record_exists_sql('SELECT * FROM {course_mapping} WHERE saml_id = :saml_id', $params)) {
-            $errors['course_mapping'] = get_string('coursemappingexists');
+            $errors['course_mapping'] = get_string('nosamlid', 'enrol_saml');
         }
 
         return $errors;

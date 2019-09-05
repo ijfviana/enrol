@@ -33,7 +33,7 @@ class task_course_mappings extends \core\task\scheduled_task {
      * @return string
      */
     public function get_name() {
-        return get_string('updatecoursemappingstask', 'enrol_saml');
+        return get_string('task_updatecoursemappings', 'enrol_saml');
     }
 
     /**

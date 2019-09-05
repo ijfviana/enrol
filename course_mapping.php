@@ -10,7 +10,7 @@ require('../../config.php');
 
 require_once('locallib.php');
 require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->libdir . '/authlib.php');
+
 //require_once($CFG->dirroot . '/user/filters/lib.php');
 //require_once($CFG->dirroot . '/user/lib.php');
 
@@ -73,7 +73,7 @@ if ($confirmuser) {
     if ($confirm != md5($delete)) {
         echo $OUTPUT->header();
         $name = $course->shortname;
-        echo $OUTPUT->heading(get_string('deleteuser', 'admin'));
+        echo $OUTPUT->heading(get_string('deletemapping', 'enrol_saml'));
 
         $optionsyes = array('delete' => $delete, 'confirm' => md5($delete));
         $deleteurl = new moodle_url($returnurl, $optionsyes);
@@ -81,7 +81,7 @@ if ($confirmuser) {
 
 
 
-        echo $OUTPUT->confirm(get_string('deletecheckfull', '', "'$name'"), $deletebutton, $returnurl);
+        echo $OUTPUT->confirm(get_string('deletecheckfullmapping', 'enrol_saml', "'$name'"), $deletebutton, $returnurl);
         echo $OUTPUT->footer();
         die;
     } else if (data_submitted()) {
@@ -120,7 +120,7 @@ echo $OUTPUT->header();
 $context = context_system::instance();
 
 
-$courses = get_some_course_mapping($page*$perpage, $perpage);
+$courses = get_some_course_mapping($page * $perpage, $perpage);
 $coursescount = course_mapping_count();
 
 $baseurl = new moodle_url('/enrol/saml/course_mapping.php', array('sort' => $sort, 'dir' => $dir, 'perpage' => $perpage));
@@ -130,9 +130,10 @@ flush();
 
 if (!$courses) {
     $match = array();
-    echo $OUTPUT->heading(get_string('nocoursesfound'));
+    echo $OUTPUT->heading(get_string('nocoursesfound', 'enrol_saml'));
 
     $table = NULL;
+    
 } else {
 
 
@@ -141,17 +142,17 @@ if (!$courses) {
     $table->colclasses = array();
 
 
-    $table->head[] = get_string('saml_id');
+    $table->head[] = get_string('saml_id', 'enrol_saml');
 
-    $table->head[] = get_string('course_id');
+    $table->head[] = get_string('course_id', 'enrol_saml');
 
     $table->head[] = get_string('active');
 
-    $table->head[] = get_string('blocked');
+    $table->head[] = get_string('blocked', 'enrol_saml');
 
-    $table->head[] = get_string('source');
+    $table->head[] = get_string('source', 'enrol_saml');
 
-    $table->head[] = get_string('created');
+    $table->head[] = get_string('created', 'enrol_saml');
 
     $table->head[] = get_string('modified');
 
@@ -166,7 +167,7 @@ if (!$courses) {
 
         $buttons = [];
 
-        
+
 
         // suspend button
         if (has_capability('enrol/saml:config', $sitecontext) && !$course->source) {
@@ -180,34 +181,44 @@ if (!$courses) {
 
                 // edit button
 
-                    $url = new moodle_url('/enrol/saml/edit_course_mapping.php', array('mappingid' => $course->id));
-                    $buttons[] = html_writer::link($url, $OUTPUT->pix_icon('t/edit', $stredit));
-                
-                // delete button
-  
+                $url = new moodle_url('/enrol/saml/edit_course_mapping.php', array('mappingid' => $course->id));
+                $buttons[] = html_writer::link($url, $OUTPUT->pix_icon('t/edit', $stredit));
 
-                    $url = new moodle_url($returnurl, array('delete' => $course->id));
-                    $buttons[] = html_writer::link($url, $OUTPUT->pix_icon('t/delete', $strdelete));
-                
+                // delete button
+
+
+                $url = new moodle_url($returnurl, array('delete' => $course->id));
+                $buttons[] = html_writer::link($url, $OUTPUT->pix_icon('t/delete', $strdelete));
             }
         }
 
 
-        
+
         if (get_saml_enrol_status($course)) {
             $status = get_string('active');
-        }else{
+        } else {
             $status = get_string('inactive');
         }
 
+        if ($course->blocked) {
+            $blocked = get_string('yes');
+        } else {
+            $blocked = get_string('no');
+        }
+
+        if (!$course->source) {
+            $fuente = get_string('source_internal', 'enrol_saml');
+        } else {
+            $fuente = get_string('source_external', 'enrol_saml');
+        }
 
         $row = [];
         $row[] = $course->saml_id;
         $row[] = $course->course_id;
 
         $row[] = $status;
-        $row[] = $course->blocked;
-        $row[] = $course->source;
+        $row[] = $blocked;
+        $row[] = $fuente;
         $row[] = $course->creation;
         $row[] = $course->modified;
 
