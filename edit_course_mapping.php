@@ -35,7 +35,7 @@ if (!enrol_is_enabled('saml')) {
 
 if($mappingid){
     $mappingcourse = $DB->get_record('course_mapping', ['id' => $mappingid], '*', MUST_EXIST);
-    $courses = get_courses_not_mapped($mappingcourse->course_id);
+    $courses = get_courses_not_mapped($mappingcourse->id);
 }else{
     $courses = get_courses_not_mapped();
 }
@@ -54,16 +54,18 @@ if ($mform->is_cancelled()) {
     $time = time();
 
     $keys = array_keys($courses);
+    
+    $course = $courses[$keys[$fromform->course_moodle]];
 
     if (!$mappingid) { //New Course Mapping
         
-        $course = $courses[$keys[$fromform->course_moodle]];
+        
 
         $fields = [
             'saml_id' => $fromform->saml_id,
             //select devuelve un numero del 0 al ...
             //ponemos el id del curso al que le corresponda esa posición
-            'course_id' => $keys[$fromform->course_moodle],
+            'course_id' => $course->shortname,
             'blocked' => $fromform->blocked,
             'source' => 0,
             'creation' => $time
@@ -77,7 +79,7 @@ if ($mform->is_cancelled()) {
 
 
         $mapping->saml_id = $fromform->saml_id;
-        $mapping->course_id = $keys[$fromform->course_moodle];
+        $mapping->course_id = $course->shortname;
         $mapping->blocked = $fromform->blocked;
         $mapping->modified = $time;
         update_course_mapping($mapping);

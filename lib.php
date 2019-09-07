@@ -201,16 +201,16 @@ class enrol_saml_plugin extends enrol_plugin {
         $samlpluginconfig = get_config('auth_saml');
         $enrolpluginconfig = get_config('enrol_saml');
 
-        $prefixes = $enrolpluginconfig->group_prefix;
+        /*$prefixes = $enrolpluginconfig->group_prefix;
         if (!empty($prefixes)) {
             $prefixes = explode(",", $prefixes);
-        }
+        }*/
 
         global $DB, $SAML_COURSE_INFO, $err;
 
         if ($enrolpluginconfig->supportcourses != 'nosupport') {
             if (!isset($samlpluginconfig->moodlecoursefieldid)) {
-                $samlpluginconfig->moodlecoursefieldid = 'id';
+                $samlpluginconfig->moodlecoursefieldid = 'shortname';
             }
             try {
                 $plugin = enrol_get_plugin('saml');
@@ -423,7 +423,7 @@ class enrol_saml_plugin extends enrol_plugin {
 
 
 
-        $sql = "SELECT saml_id, course_id, blocked from course_mapping";
+        $sql = "SELECT  course_id, saml_id, blocked from course_mapping";
 
         if ($rs = $extdb->Execute($sql)) {
             if (!$rs->EOF) {
@@ -441,7 +441,8 @@ class enrol_saml_plugin extends enrol_plugin {
                 foreach ($external as $ex_mapping) {
 
 
-                    if ($instance = $DB->get_record('enrol', ['enrol' => 'saml', 'courseid' => $ex_mapping->course_id])) {
+                    $course = $DB->get_record('enrol', ['shortname' => $ex_mapping->course_id]);
+                    if ($instance = $DB->get_record('enrol', ['enrol' => 'saml', 'courseid' => $course->id])) {
 
                         $instance->status = 1;
                         $DB->update_record('enrol', $instance);
@@ -483,7 +484,8 @@ class enrol_saml_plugin extends enrol_plugin {
 
         $entry = false;
 
-        if (!empty($data['saml_id']) && !empty($data['course_id'])) {
+
+        if ($this->prepare($data)) {
             $entry = true;
 
             if ($this->course_mapping_exists($data) && $mapping = $DB->get_record('course_mapping', ['course_id' => $data['course_id']])) {
@@ -498,7 +500,7 @@ class enrol_saml_plugin extends enrol_plugin {
                     $trace->output("can not insert new course mapping, duplicate detected: course id: " . $data['course_id'] . " saml id: " . $data['saml_id'], 1);
                 }
             } else {
-                if ($DB->record_exists('course', ['id' => $data['course_id']])) {
+                if ($DB->record_exists('course', ['shortname' => $data['course_id']])) {
 
                     $data['creation'] = time();
                     $data['source'] = (int) 1;
@@ -514,10 +516,33 @@ class enrol_saml_plugin extends enrol_plugin {
         }
         return $entry;
     }
+    
+    /**
+     * Validates and prepares the data.
+     *
+     * @return $res false if any error occured.
+     */
+    protected function prepare($data) {
+        global $DB;
+
+        $res = true;
+        $site = $DB->get_record('course', ['id' => SITEID]);
+
+        // Validate the shortname.
+        if (!empty($data['saml_id']) && !empty($data['course_id']) && $data['course_id'] != $site->shortname) {
+            if ($data['course_id'] !== clean_param($data['course_id'], PARAM_TEXT) && $data['saml_id'] !== clean_param($data['saml_id'], PARAM_ALPHAEXT)) {
+
+                $res = false;
+            }
+        } else {
+            $res = false;
+        }
+        return $res;
+    }
 
     protected function get_external_source_mappings() {
         global $DB;
-        
+
         return $DB->get_records('course_mapping', ['source' => 1]);
     }
 
@@ -570,8 +595,8 @@ class enrol_saml_plugin extends enrol_plugin {
         global $DB;
 
 
-        $select = 'saml_id = :saml_id OR course_id = :course_id';
-        $params = ['saml_id' => $data['saml_id'], 'course_id' => $data['course_id']];
+        $select = 'course_id = :course_id';
+        $params = ['course_id' => $data['course_id']];
 
         return $DB->record_exists_select('course_mapping', $select, $params);
     }

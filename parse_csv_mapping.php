@@ -66,12 +66,15 @@ class mapping_parser {
 
 
             $data = $this->parse_line($line);
-            if (!empty($data['saml_id']) && !empty($data['course_id']) && $data['course_id'] != SITEID) {
 
-                if ($this->exists($data) && $mapping = $DB->get_record('course_mapping', ['saml_id' => $data['saml_id']])) {
+
+            if ($this->prepare($data)) {
+
+
+                if ($this->exists($data) && $mapping = $DB->get_record('course_mapping', ['course_id' => $data['course_id']])) {
 
                     //can not modify external source
-                    if ($this->mode || !$mapping->source) {
+                    if ($this->mode && !$mapping->source) {
 
                         $data['modified'] = time();
 
@@ -95,7 +98,7 @@ class mapping_parser {
                     }
                 } else {
 
-                    if ($DB->record_exists('course', ['id' => $data['course_id']])) {
+                    if ($DB->record_exists('course', ['shortname' => $data['course_id']])) {
 
                         $data['creation'] = time();
                         $data['source'] = (int) 0;
@@ -182,10 +185,33 @@ class mapping_parser {
         global $DB;
 
 
-        $select = 'saml_id = :saml_id OR course_id = :course_id';
-        $params = ['saml_id' => $data['saml_id'], 'course_id' => $data['course_id']];
+        $select = 'course_id = :course_id';
+        $params = ['course_id' => $data['course_id']];
 
         return $DB->record_exists_select('course_mapping', $select, $params);
+    }
+
+    /**
+     * Validates and prepares the data.
+     *
+     * @return $res false if any error occured.
+     */
+    protected function prepare($data) {
+        global $DB;
+
+        $res = true;
+        $site = $DB->get_record('course', ['id' => SITEID]);
+
+        // Validate the shortname.
+        if (!empty($data['saml_id']) && !empty($data['course_id']) && $data['course_id'] != $site->shortname) {
+            if ($data['course_id'] !== clean_param($data['course_id'], PARAM_TEXT) && $data['saml_id'] !== clean_param($data['saml_id'], PARAM_ALPHAEXT)) {
+
+                $res = false;
+            }
+        } else {
+            $res = false;
+        }
+        return $res;
     }
 
     /**
@@ -212,9 +238,9 @@ class mapping_parser {
      * @return boolean
      */
     public function result_to_string($result) {
-        $res = null;
+        $res = $this->mode;
         foreach ($result as $key => $value) {
-            $res = $res . '  '. $key . ' (' . $value . ')';
+            $res = $res . '  ' . $key . ' (' . $value . ')';
         }
 
         return $res;

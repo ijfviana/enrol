@@ -44,7 +44,7 @@ $f = fopen('php://memory', 'w');
 $delimiter = ";";
 
 // Set column headers.
-$coursefields = ['saml_id', 'course_id', 'blocked', 'creation', 'modified'];
+$coursefields = ['course_id', 'saml_id', 'blocked', 'creation', 'modified'];
 
 fputcsv($f, $coursefields, $delimiter);
 

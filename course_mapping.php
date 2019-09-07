@@ -9,6 +9,7 @@
 require('../../config.php');
 
 require_once('locallib.php');
+require_once('mapping_filter.php');
 require_once($CFG->libdir . '/adminlib.php');
 
 //require_once($CFG->dirroot . '/user/filters/lib.php');
@@ -68,7 +69,7 @@ if ($confirmuser) {
     
 } else if ($delete) {              // Delete a selected course mapping, after confirmation
     $course_mapping = $DB->get_record('course_mapping', ['id' => $delete], '*', MUST_EXIST);
-    $course = $DB->get_record('course', ['id' => $course_mapping->course_id], '*', MUST_EXIST);
+    $course = $DB->get_record('course', ['shortname' => $course_mapping->course_id], '*', MUST_EXIST);
 
     if ($confirm != md5($delete)) {
         echo $OUTPUT->header();
@@ -114,10 +115,14 @@ if ($confirmuser) {
     redirect($returnurl);
 }
 
+// create the user filter form
+//$ufiltering = new user_filtering();
 echo $OUTPUT->header();
-
-// Carry on with the user listing
+$filter = new mapping_filtering();
 $context = context_system::instance();
+
+
+
 
 
 $courses = get_some_course_mapping($page * $perpage, $perpage);
@@ -133,7 +138,6 @@ if (!$courses) {
     echo $OUTPUT->heading(get_string('nocoursesfound', 'enrol_saml'));
 
     $table = NULL;
-    
 } else {
 
 
@@ -241,6 +245,9 @@ if (!empty($table)) {
     echo html_writer::end_tag('div');
     echo $OUTPUT->paging_bar($coursescount, $page, $perpage, $baseurl);
 }
+
+$url = new moodle_url('/enrol/saml/edit_course_mapping.php');
+echo $OUTPUT->single_button($url, get_string('new_mapping', 'enrol_saml'), 'get');
 
 echo $OUTPUT->footer();
 

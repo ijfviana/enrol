@@ -17,15 +17,15 @@ function get_all_courses_available() {
     return $courses;
 }
 
-function get_courses_not_mapped($courseid = null) {
+function get_courses_not_mapped($mapid = null) {
 
     global $DB;
-    if (!empty($courseid)) { // Edit course mapping with this id
+    if (!empty($mapid)) { // Can edit course mapping with this id
         $query = "SELECT id, idnumber, shortname from {course} as c WHERE NOT EXISTS( 
-    SELECT * FROM {course_mapping} as m WHERE c.id = m.course_id and c.id != '" . $courseid . "') AND c.id !=" . SITEID;
+    SELECT * FROM {course_mapping} as m WHERE c.shortname = m.course_id and m.id != '" . $mapid . "') AND c.id !=" . SITEID;
     } else { // New course mapping
         $query = "SELECT id, idnumber, shortname from {course} as c WHERE NOT EXISTS( 
-    SELECT * FROM {course_mapping} as m WHERE c.id = m.course_id) AND c.id !=" . SITEID;
+    SELECT * FROM {course_mapping} as m WHERE c.shortname = m.course_id) AND c.id !=" . SITEID;
     }
 
     $courses = $DB->get_records_sql($query);
@@ -42,7 +42,7 @@ function get_all_course_mapping() {
 function get_all_course_mapping_custom() {
 
     global $DB;
-    $query = "SELECT saml_id, course_id, blocked, creation, modified from {course_mapping}";
+    $query = "SELECT  course_id, saml_id, blocked, creation, modified from {course_mapping}";
     $courses = $DB->get_records_sql($query);
     return $courses;
 }
@@ -59,14 +59,16 @@ function update_course_mapping($course) {
     return $DB->update_record('course_mapping', $course);
 }
 
-function get_saml_enrol_status($course) {
+function get_saml_enrol_status($course_map) {
 
     global $DB;
+    
+    $getcourse = $DB->get_record('course', ['shortname' => $course_map->course_id]);
 
     $select = 'courseid = :course_id AND enrol = :enrol AND status = :status' ;
     // status = 0, means enrol instance is active. table {enrol}
     $saml='saml';
-    $params = ['course_id' => $course->course_id, 'enrol' => $saml, 'status' => 0];
+    $params = ['course_id' => $getcourse->id, 'enrol' => $saml, 'status' => 0];
 
     return $DB->record_exists_select('enrol', $select, $params);
 }

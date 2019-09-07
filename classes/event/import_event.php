@@ -40,7 +40,7 @@ class import_event extends \core\event\base {
     protected function init() {
         $this->data['crud'] = 'c'; // c(reate), r(ead), u(pdate), d(elete)
         $this->data['edulevel'] = self::LEVEL_OTHER;
-        $this->data['objecttable'] = 'course_mapping';
+        //$this->data['objecttable'] = 'course_mapping';
     }
  
     public static function get_name() {

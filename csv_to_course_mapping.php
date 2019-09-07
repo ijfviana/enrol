@@ -29,7 +29,7 @@ if (!is_siteadmin()) {
 
 
 
-$PAGE->set_url('/enrol/saml/csv_to_course_mapping.php', ['mappingid' => $mappingid]);
+$PAGE->set_url('/enrol/saml/csv_to_course_mapping.php');
 $PAGE->set_pagelayout('admin');
 $PAGE->set_context(context_system::instance()); // SYSTEM context.
 
@@ -55,6 +55,8 @@ if ($mform->is_cancelled()) {
     } else if ($readcount == 0) {
         print_error('csvemptyfile', 'error', $returnurl, $cir->get_error());
     }
+    
+    
 
     $mode = $fromform->mode;
     $parser = new mapping_parser($cir, $mode);
