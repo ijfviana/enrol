@@ -197,7 +197,7 @@ class enrol_saml_plugin extends enrol_plugin {
     }
 
     public function sync_user_enrolments($user) {
-        
+
         $samlpluginconfig = get_config('auth_saml');
         $enrolpluginconfig = get_config('enrol_saml');
 
@@ -441,12 +441,18 @@ class enrol_saml_plugin extends enrol_plugin {
                 foreach ($external as $ex_mapping) {
 
 
-                    $course = $DB->get_record('enrol', ['shortname' => $ex_mapping->course_id]);
-                    if ($instance = $DB->get_record('enrol', ['enrol' => 'saml', 'courseid' => $course->id])) {
+                    $courseid = $DB->get_record('course', ['shortname' => $ex_mapping->course_id]);
+                    if ($instance = $DB->get_record('enrol', ['enrol' => 'saml', 'courseid' => $courseid->id])) {
+                        if (!$instance->status) {
 
-                        $instance->status = 1;
-                        $DB->update_record('enrol', $instance);
-                        $trace->output("course mapping, is now inactive: course id: " . $ex_mapping->course_id . " saml id: " . $ex_mapping->saml_id, 1);
+
+
+                            $instance->status = 1;
+                            $DB->update_record('enrol', $instance);
+                            $trace->output("course mapping, is now inactive: course id: " . $ex_mapping->course_id . " saml id: " . $ex_mapping->saml_id, 1);
+                        }else{
+                            $trace->output("course mapping, was inactive: course id: " . $ex_mapping->course_id . " saml id: " . $ex_mapping->saml_id, 1);
+                        }
                     }
                 }
             }
@@ -516,7 +522,7 @@ class enrol_saml_plugin extends enrol_plugin {
         }
         return $entry;
     }
-    
+
     /**
      * Validates and prepares the data.
      *
