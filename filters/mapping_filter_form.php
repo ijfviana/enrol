@@ -16,12 +16,11 @@ class mapping_add_filter_form extends moodleform {
     public function definition() {
         $mform       =& $this->_form;
         $fields      = $this->_customdata['fields'];
-        $extraparams = $this->_customdata['extraparams'];
 
         $mform->addElement('header', 'newfilter', get_string('newfilter', 'filters'));
 
         foreach ($fields as $ft) {
-            $ft->setupForm($mform);
+            //$ft->setupForm($mform);
         }
 
         // Add button.

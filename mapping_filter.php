@@ -17,6 +17,7 @@ require_once($CFG->dirroot . '/user/filters/yesno.php');
 require_once($CFG->dirroot . '/user/filters/cohort.php');
 require_once($CFG->dirroot . '/user/filters/user_filter_forms.php');
 require_once($CFG->dirroot . '/user/filters/checkbox.php');
+require_once($CFG->dirroot . '/enrol/saml/filters/mapping_filter_form.php');
 
 class mapping_filtering {
 

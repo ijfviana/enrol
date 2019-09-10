@@ -77,6 +77,6 @@ if ($mform->is_cancelled()) {
 
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('importmapping', 'enrol_saml'));
-echo html_writer::link(new moodle_url('/admin/settings.php?section=enrolsettingssaml', get_string('returntosettings', 'enrol_saml')));
+//echo html_writer::link(new moodle_url('/admin/settings.php?section=enrolsettingssaml', get_string('returntosettings', 'enrol_saml')));
 $mform->display();
 echo $OUTPUT->footer();

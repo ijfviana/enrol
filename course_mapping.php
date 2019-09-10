@@ -119,9 +119,10 @@ if ($confirmuser) {
 }
 
 // create the user filter form
-$ufiltering = new mapping_filtering();
+//$ufiltering = new mapping_filtering();
 echo $OUTPUT->header();
-$filter = new mapping_filtering();
+echo $OUTPUT->heading(get_string('pluginname', 'enrol_saml'));
+//$filter = new mapping_filtering();
 $context = context_system::instance();
 
 
@@ -232,7 +233,7 @@ if (!$courses) {
     }
 }
 
-echo html_writer::link(new moodle_url("/admin/settings.php?section=enrolsettingssaml", get_string('returntosettings', 'enrol_saml')));
+//echo html_writer::link(new moodle_url("/admin/settings.php?section=enrolsettingssaml", get_string('returntosettings', 'enrol_saml')));
 //html_writer::link(new moodle_url('/admin/settings.php', array('section'=>'filtersetting'.$filter)), get_string('settings'));
 
 

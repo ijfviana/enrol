@@ -12,10 +12,10 @@ $tasks = [
     [
         'classname' => 'enrol_saml\task\task_course_mappings',
         'blocking' => 0,
-        'minute' => '*/5',
+        'minute' => '*',
         'hour' => '*',
         'day' => '*',
         'month' => '*',
-        'dayofweek' => '0'
+        'dayofweek' => '*'
     ],
 ];
