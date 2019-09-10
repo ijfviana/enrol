@@ -197,14 +197,14 @@ class enrol_saml_plugin extends enrol_plugin {
     }
 
     public function sync_user_enrolments($user) {
-        // Configuration is in the auth_saml config file. (Not in the enrol/saml).
+        
         $samlpluginconfig = get_config('auth_saml');
         $enrolpluginconfig = get_config('enrol_saml');
 
-        /*$prefixes = $enrolpluginconfig->group_prefix;
+        $prefixes = $enrolpluginconfig->group_prefix;
         if (!empty($prefixes)) {
             $prefixes = explode(",", $prefixes);
-        }*/
+        }
 
         global $DB, $SAML_COURSE_INFO, $err;
 
@@ -228,7 +228,7 @@ class enrol_saml_plugin extends enrol_plugin {
                                     $delcourseids = array_keys($SAML_COURSE_INFO->mapped_courses[$role]['inactive']);
                                 }
                             }
-                            if (!$samlpluginconfig->ignoreinactivecourses) {
+                            if (!$enrolpluginconfig->ignoreinactivecourses) {
                                 foreach ($delcourseids as $courseid) {
                                     // Check that is not listed on $newcourseids.
                                     if (in_array($courseid, $newcourseids)) {

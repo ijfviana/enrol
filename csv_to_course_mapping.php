@@ -58,23 +58,25 @@ if ($mform->is_cancelled()) {
     
     
 
+    flush();
+    
     $mode = $fromform->mode;
     $parser = new mapping_parser($cir, $mode);
-
-    $result = $parser->execute($PAGE->context);
-
-    echo $OUTPUT->notification($parser->result_to_string($result));
-
-
+    
+    echo $OUTPUT->header();
+    echo $OUTPUT->heading(get_string('importmappingreview', 'enrol_saml'));
+    $parser->execute($PAGE->context);
 
 
 
     //echo $OUTPUT->confirm($returnurl, get_string('confirm'));
+    echo $OUTPUT->continue_button($returnurl);
 
-    redirect($returnurl);
+    //redirect($returnurl);
 }
 
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('importmapping', 'enrol_saml'));
+echo html_writer::link(new moodle_url('/admin/settings.php?section=enrolsettingssaml', get_string('returntosettings', 'enrol_saml')));
 $mform->display();
 echo $OUTPUT->footer();

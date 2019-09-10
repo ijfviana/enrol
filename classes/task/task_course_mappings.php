@@ -60,19 +60,25 @@ class task_course_mappings extends \core\task\scheduled_task {
         $update = !empty($config->updatemappings);
         $active = !empty($config->externalmappings);
 
-        if ($update == "noupdate") {
-            $update = 0;
-        } else {
-            $update = 1;
-        }
+        if ($config->supportcourses == 'external') {
+            
+            if ($update == "noupdate") {
+                $update = 0;
+            } else {
+                $update = 1;
+            }
 
-        if ($active == "ignore") {
-            $active = 0;
-        } else {
-            $active = 1;
+            if ($active == "ignore") {
+                $active = 0;
+            } else {
+                $active = 1;
+            }
+
+            $enrol->update_course_mappings($trace, $update, $active);
+        }else{
+            mtrace('enrol_saml plugin supportcourses is not external', 2);
+            return;
         }
-        
-        $enrol->update_course_mappings($trace, $update, $active);
     }
 
 }

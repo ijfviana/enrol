@@ -62,7 +62,7 @@ class course_mapping_editadvanced_form extends moodleform {
         $new_mapping = (object) $data;
         //$course_mapping    = $DB->get_record('course_mapping', array('saml_id' => $new_mapping->saml_id));
 
-        if (empty($new_mapping->saml_id)) {
+        if ($new_mapping->saml_id == '') {
             $errors['course_mapping'] = get_string('nosamlid', 'enrol_saml');
         }
 

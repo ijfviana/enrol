@@ -36,8 +36,11 @@ $PAGE->set_url('/enrol/saml/course_mapping.php');
 $PAGE->set_pagelayout('admin');
 
 
+
 $sitecontext = context_system::instance();
 $site = get_site();
+
+$PAGE->set_context($sitecontext);
 
 if (!is_siteadmin()) {
     die('Only admins can execute this action.');
@@ -116,7 +119,7 @@ if ($confirmuser) {
 }
 
 // create the user filter form
-//$ufiltering = new user_filtering();
+$ufiltering = new mapping_filtering();
 echo $OUTPUT->header();
 $filter = new mapping_filtering();
 $context = context_system::instance();
@@ -151,8 +154,6 @@ if (!$courses) {
     $table->head[] = get_string('course_id', 'enrol_saml');
 
     $table->head[] = get_string('active');
-
-    $table->head[] = get_string('blocked', 'enrol_saml');
 
     $table->head[] = get_string('source', 'enrol_saml');
 
@@ -204,12 +205,6 @@ if (!$courses) {
             $status = get_string('inactive');
         }
 
-        if ($course->blocked) {
-            $blocked = get_string('yes');
-        } else {
-            $blocked = get_string('no');
-        }
-
         if (!$course->source) {
             $fuente = get_string('source_internal', 'enrol_saml');
         } else {
@@ -221,7 +216,6 @@ if (!$courses) {
         $row[] = $course->course_id;
 
         $row[] = $status;
-        $row[] = $blocked;
         $row[] = $fuente;
         $row[] = $course->creation;
         $row[] = $course->modified;
@@ -238,6 +232,9 @@ if (!$courses) {
     }
 }
 
+echo html_writer::link(new moodle_url("/admin/settings.php?section=enrolsettingssaml", get_string('returntosettings', 'enrol_saml')));
+//html_writer::link(new moodle_url('/admin/settings.php', array('section'=>'filtersetting'.$filter)), get_string('settings'));
+
 
 if (!empty($table)) {
     echo html_writer::start_tag('div', array('class' => 'no-overflow'));
@@ -250,4 +247,5 @@ $url = new moodle_url('/enrol/saml/edit_course_mapping.php');
 echo $OUTPUT->single_button($url, get_string('new_mapping', 'enrol_saml'), 'get');
 
 echo $OUTPUT->footer();
+
 

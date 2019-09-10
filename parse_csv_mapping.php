@@ -6,6 +6,9 @@
  * and open the template in the editor.
  */
 
+defined('MOODLE_INTERNAL') || die();
+require_once($CFG->dirroot . '/enrol/saml/classes/tracker.php');
+
 class mapping_parser {
 
     /** @var csv_import_reader */
@@ -47,22 +50,30 @@ class mapping_parser {
      */
     public function execute($context) {
 
-
         global $DB;
 
-        $result[] = ["total" => 0,
-            "updated" => 0,
-            "ignored" => 0,
-            "created" => 0,
-            "errors" => 0
-        ];
+        /* $result[] = ["total" => 0,
+          "updated" => 0,
+          "ignored" => 0,
+          "created" => 0,
+          "errors" => 0
+          ]; */
+
+        $total = 0;
+        $updated = 0;
+        $ignored = 0;
+        $created = 0;
+        $n_errors = 0;
+        
+        $tracker = new uploadmapping_tracker();
 
 
 
         // Loop over the CSV lines.
         while ($line = $this->cir->next()) {
             $this->linenb++;
-            $result["total"] += 1;
+            //$result["total"] += 1;
+            $total++;
 
 
             $data = $this->parse_line($line);
@@ -81,20 +92,31 @@ class mapping_parser {
 
                         $data['id'] = $mapping->id;
                         if (update_course_mapping($data)) {
-                            $result["updated"] += 1;
+                            
+                            //$result["updated"] += 1;
+                            $updated++;
+                            
+                            
                             $entry = "Updated Course id " . $data['course_id'] . " SAML id " . $data['saml_id'] . " course mapping";
                             // Trigger an event for creating this field.
                             $this->events($entry, $context);
+                            $tracker->output($this->linenb, true, $data);
+                            
                         } else {
+                            $n_errors++;
                             $errors = "Course id " . $data['course_id'] . " can not be updated";
                             $this->events($errors, $context);
+                            $tracker->output($this->linenb, false, $data);
                         }
                     } else {
 
                         $entry = "Ignored Course id " . $data['course_id'] . " SAML id " . $data['saml_id'] . " course mapping";
                         $this->events($entry, $context);
 
-                        $result["ignored"] += 1;
+                        //$result["ignored"] += 1;
+                        $ignored++;
+                        $tracker->output($this->linenb, true, $data);
+                        
                     }
                 } else {
 
@@ -104,30 +126,43 @@ class mapping_parser {
                         $data['source'] = (int) 0;
                         //new entry in course_mapping table
                         if ($DB->insert_record('course_mapping', $data)) {
-                            $result["created"] += 1;
+                            //$result["created"] += 1;
+                            $created++;
                             $entry = "Created Course id " . $data['course_id'] . " SAML id " . $data['saml_id'] . " course mapping";
                             $this->events($entry, $context);
+                            $tracker->output($this->linenb, true, $data);
                         } else {
+                            $n_errors++;
                             $errors = "Course id " . $data['course_id'] . " can not be inserted";
                             $this->events($errors, $context);
+                            $tracker->output($this->linenb, false, $data);
                         }
                     } else {
 
                         $errors = "Course id " . $data['course_id'] . " does not exist";
                         $this->events($errors, $context);
-                        $result["errors"] += 1;
+                        //$result["errors"] += 1;
+                        $n_errors++;
+                        $tracker->output($this->linenb, false, $data);
                     }
                 }
             } else {
 
                 $errors = "Entry missing parameters";
                 $this->events($errors, $context);
-                $result["errors"] += 1;
+                //$result["errors"] += 1;
+                $n_errors++;
+                $tracker->output($this->linenb, false, $data);
             }
+            
+            
         }
+        
+        $tracker->finish();
+        $tracker->results($total, $created, $updated, $n_errors);
 
 
-        return $result;
+        //return $result;
     }
 
     /**

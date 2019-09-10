@@ -55,6 +55,9 @@ $string['externalmappings_desc'] = 'Course mappings that are no longer entries i
 $string['ignore_mapping'] = 'Ignore duplicated mappings';
 $string['import'] = 'Import';
 $string['importmapping'] = 'Import Course Mappings from .csv';
+$string['importmappingreview'] = 'Import Course Mappings results';
+
+
 $string['import_event'] = 'Import event';
 $string['saml:config'] = 'Configure saml enrol instances';
 $string['saml:enrol'] = 'Enrol users';
@@ -86,6 +89,8 @@ $string['unenrolselfconfirm'] = 'Do you really want to unenrol yourself from cou
 $string['unenroluser'] = 'Do you really want to unenrol "{$a->user}" from course "{$a->course}"?';
 $string['unenrolusers'] = 'Unenrol users';
 
+$string['returntosettings'] = 'Return to settings';
+
 $string['update_mapping'] = 'Update duplicated mappings';
 $string['updatemappings_desc'] = 'Update duplicated mappings from the external DB. Updated entries will appear as modified';
 $string['wscannotenrol'] = 'SAML plugin instance cannot enrol a user in the course id = {$a->courseid}';
@@ -98,7 +103,7 @@ $string['created_group_info'] = 'Description for new groups';
 $string['created_group_info_description'] = 'Set in this field the text that will be used for the description of new groups created by the extension';
 
 
-$string['task_updatecoursemappings'] = 'Synchronise users task';
+$string['task_updatecoursemappings'] = 'Synchronise course mappings task';
 
 
 
