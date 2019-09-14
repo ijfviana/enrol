@@ -183,7 +183,7 @@ if ($ADMIN->fulltree) {
     
 
 
-    if (!empty($courses) ) {
+    if (!empty($courses)) {
     
         
         $settings->add(

@@ -20,17 +20,14 @@ require_once($CFG->libdir . '/adminlib.php');
 $delete = optional_param('delete', 0, PARAM_INT);
 $confirm = optional_param('confirm', '', PARAM_ALPHANUM);   //md5 confirmation hash
 $confirmuser = optional_param('confirmuser', 0, PARAM_INT);
-$sort = optional_param('sort', 'name', PARAM_ALPHANUM);
+$sort = optional_param('sort', 'saml_id', PARAM_ALPHAEXT);
 $dir = optional_param('dir', 'ASC', PARAM_ALPHA);
 $page = optional_param('page', 0, PARAM_INT);
 $perpage = optional_param('perpage', 5, PARAM_INT);        // how many per page
-$ru = optional_param('ru', '2', PARAM_INT);            // show remote users
-$lu = optional_param('lu', '2', PARAM_INT);            // show local users
 $acl = optional_param('acl', '0', PARAM_INT);           // id of user to tweak mnet ACL (requires $access)
 $suspend = optional_param('suspend', 0, PARAM_INT);
 $unsuspend = optional_param('unsuspend', 0, PARAM_INT);
-$lock = optional_param('unlock', 0, PARAM_INT);
-$unlock = optional_param('unlock', 0, PARAM_INT);
+
 
 $PAGE->set_url('/enrol/saml/course_mapping.php');
 $PAGE->set_pagelayout('admin');
@@ -51,17 +48,10 @@ if (!has_capability('enrol/saml:config', $sitecontext)) {
     print_error('nopermissions', 'error', '', 'edit/edit course mappings');
 }
 
-
-
-$stredit = get_string('edit');
-$strdelete = get_string('delete');
-$strdeletecheck = get_string('deletecheck');
-$strshowallcourses = get_string('showallcourses');
-$strsuspend = get_string('suspenduser', 'admin');
-$strunsuspend = get_string('unsuspenduser', 'admin');
-$strunlock = get_string('unlockaccount', 'admin');
-$strconfirm = get_string('confirm');
-
+$stredit = get_string('edit', 'enrol_saml');
+$strdelete = get_string('deletemapping', 'enrol_saml');
+$strsuspend = get_string('suspendmap', 'enrol_saml');
+$strunsuspend = get_string('unsuspendmap', 'enrol_saml');
 
 $returnurl = new moodle_url('/enrol/saml/course_mapping.php', array('sort' => $sort, 'dir' => $dir, 'perpage' => $perpage, 'page' => $page));
 
@@ -121,19 +111,47 @@ if ($confirmuser) {
 // create the user filter form
 //$ufiltering = new mapping_filtering();
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('pluginname', 'enrol_saml'));
-//$filter = new mapping_filtering();
+
+$filter = new mapping_filtering();
 $context = context_system::instance();
 
+$columns = ['saml_id', 'course_id', 'source', 'creation', 'modified'];
+
+foreach ($columns as $column) {
+    $string[$column] = get_map_field_name($column);
+    if ($sort != $column) {
+        $columnicon = "";
+
+        $columndir = "ASC";
+    } else {
+        $columndir = $dir == "ASC" ? "DESC" : "ASC";
+
+        $columnicon = ($dir == "ASC") ? "sort_asc" : "sort_desc";
+        $columnicon = $OUTPUT->pix_icon('t/' . $columnicon, get_string(strtolower($columndir)), 'core', ['class' => 'iconsort']);
+    }
+    $$column = "<a href=\"course_mapping.php?sort=$column&amp;dir=$columndir\">" . $string[$column] . "</a>$columnicon";
+}
 
 
+list($extrasql, $params) = $filter->get_sql_filter();
+$courses = get_course_map_listing($sort, $dir, $page * $perpage, $perpage, '', $extrasql, $params);
+//$courses = get_some_course_mapping($page * $perpage, $perpage);
 
-
-$courses = get_some_course_mapping($page * $perpage, $perpage);
 $coursescount = course_mapping_count();
+$coursesearchcount = course_mapping_count($extrasql, $params);
+
+
+
+if ($extrasql !== '') {
+    echo $OUTPUT->heading("$coursesearchcount / $coursescount " . get_string('course_map', 'enrol_saml'));
+    $coursescount = $coursesearchcount;
+} else {
+    echo $OUTPUT->heading("$coursescount " . get_string('course_map', 'enrol_saml'));
+}
 
 $baseurl = new moodle_url('/enrol/saml/course_mapping.php', array('sort' => $sort, 'dir' => $dir, 'perpage' => $perpage));
 echo $OUTPUT->paging_bar($coursescount, $page, $perpage, $baseurl);
+
 
 flush();
 
@@ -150,17 +168,20 @@ if (!$courses) {
     $table->colclasses = array();
 
 
-    $table->head[] = get_string('saml_id', 'enrol_saml');
+    $table->head[] = $saml_id;
 
-    $table->head[] = get_string('course_id', 'enrol_saml');
+    $table->head[] = $course_id;
 
     $table->head[] = get_string('active');
 
-    $table->head[] = get_string('source', 'enrol_saml');
+    $table->head[] = $source;
 
-    $table->head[] = get_string('created', 'enrol_saml');
+    $table->head[] = $creation;
 
-    $table->head[] = get_string('modified');
+    $table->head[] = $modified;
+
+    $table->head[] = get_string('edit');
+    $table->colclasses[] = 'centeralign';
 
 
     $table->id = "courses";
@@ -172,8 +193,6 @@ if (!$courses) {
     foreach ($courses as $course) {
 
         $buttons = [];
-
-
 
         // suspend button
         if (has_capability('enrol/saml:config', $sitecontext) && !$course->source) {
@@ -235,7 +254,9 @@ if (!$courses) {
 
 //echo html_writer::link(new moodle_url("/admin/settings.php?section=enrolsettingssaml", get_string('returntosettings', 'enrol_saml')));
 //html_writer::link(new moodle_url('/admin/settings.php', array('section'=>'filtersetting'.$filter)), get_string('settings'));
-
+// add filters
+$filter->display_add();
+$filter->display_active();
 
 if (!empty($table)) {
     echo html_writer::start_tag('div', array('class' => 'no-overflow'));

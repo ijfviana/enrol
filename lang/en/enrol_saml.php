@@ -27,13 +27,23 @@ $string['blocked'] = 'Blocked';
 $string['blocked_help'] = 'Check wherever this entry should be modified by the admin or not';
 $string['check_mapping'] = 'Check course mappings';
 $string['course_id'] = 'Moodle Course id';
+
+$string['course_map'] = 'Course Mappings';
 $string['course_moodle'] = 'Moodle course shortname';
 $string['course_moodle_help'] = 'Select the Moodle course you want to map';
-$string['created'] = 'Created';
+$string['creation'] = 'Created';
 $string['defaultperiod'] = 'Default enrolment period';
 $string['defaultperiod_desc'] = 'Default length of the default enrolment period setting (in seconds).';
 $string['deletecheckfullmapping'] = 'Are you absolutely sure you want to completely delete the course mapping {$a}';
 $string['deletemapping'] = 'Delete course mapping';
+
+
+$string['edit'] = "Edit course mapping";
+
+
+$string['suspendmap'] = "Suspend course mapping";
+
+$string['unsuspendmap'] = "Unsuspend course mapping";
 
 
 $string['enrol_saml_coursemapping'] = "Course Mapping";
@@ -103,6 +113,7 @@ $string['created_group_info'] = 'Description for new groups';
 $string['created_group_info_description'] = 'Set in this field the text that will be used for the description of new groups created by the extension';
 
 
+$string['modified'] = 'Modified';
 $string['task_updatecoursemappings'] = 'Synchronise course mappings task';
 
 
