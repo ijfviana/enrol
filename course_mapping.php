@@ -28,8 +28,10 @@ $acl = optional_param('acl', '0', PARAM_INT);           // id of user to tweak m
 $suspend = optional_param('suspend', 0, PARAM_INT);
 $unsuspend = optional_param('unsuspend', 0, PARAM_INT);
 
-
-$PAGE->set_url('/enrol/saml/course_mapping.php');
+/*
+$PAGE->set_title("Course Mappings");
+$PAGE->set_heading("SAML Course Mappings");
+$PAGE->set_url($CFG->wwwroot .'enrol/saml/course_mapping.php');
 $PAGE->set_pagelayout('admin');
 
 
@@ -38,6 +40,13 @@ $sitecontext = context_system::instance();
 $site = get_site();
 
 $PAGE->set_context($sitecontext);
+*/
+
+admin_externalpage_setup('course_mappings');
+
+    $sitecontext = context_system::instance();
+    $site = get_site();
+
 
 if (!is_siteadmin()) {
     die('Only admins can execute this action.');

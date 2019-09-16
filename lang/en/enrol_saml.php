@@ -32,6 +32,7 @@ $string['course_map'] = 'Course Mappings';
 $string['course_moodle'] = 'Moodle course shortname';
 $string['course_moodle_help'] = 'Select the Moodle course you want to map';
 $string['creation'] = 'Created';
+$string['csv_to_course_mapping'] = 'Import CSV to Course Map';
 $string['defaultperiod'] = 'Default enrolment period';
 $string['defaultperiod_desc'] = 'Default length of the default enrolment period setting (in seconds).';
 $string['deletecheckfullmapping'] = 'Are you absolutely sure you want to completely delete the course mapping {$a}';

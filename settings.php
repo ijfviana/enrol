@@ -26,6 +26,16 @@ defined('MOODLE_INTERNAL') || die();
 
 //este formulario aparece al instalar el modulo
 //https://docs.moodle.org/dev/Admin_settings
+
+if ($hassiteconfig) {
+    
+    $pluginname = get_string('pluginname', 'enrol_saml');
+    $ADMIN->add('root', new admin_category('saml', get_string('pluginname', 'enrol_saml')));
+    
+    $ADMIN->add('saml', new admin_externalpage('course_mappings', new lang_string('course_mappings','enrol_saml'), "$CFG->wwwroot/enrol/saml/course_mapping.php", array('enrol/saml:config')));
+    $ADMIN->add('saml', new admin_externalpage('csv_to_course_mapping', new lang_string('csv_to_course_mapping','enrol_saml'), "$CFG->wwwroot/enrol/saml/csv_to_course_mapping.php", array('enrol/saml:config')));
+
+}
 if ($ADMIN->fulltree) {
     // General settings.
     $settings->add(

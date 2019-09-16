@@ -28,10 +28,18 @@ if (!is_siteadmin()) {
 }
 
 
-
+/*
 $PAGE->set_url('/enrol/saml/csv_to_course_mapping.php');
 $PAGE->set_pagelayout('admin');
 $PAGE->set_context(context_system::instance()); // SYSTEM context.
+ * 
+ */
+
+admin_externalpage_setup('csv_to_course_mapping');
+
+$sitecontext = context_system::instance();
+$site = get_site();
+
 
 $returnurl = new moodle_url('/enrol/saml/course_mapping.php');
 
