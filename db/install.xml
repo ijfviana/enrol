@@ -15,8 +15,8 @@
     <TABLE NAME="course_mapping" COMMENT="course_mapping table. For mapping IDP courses with Moodle courses">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="18" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="saml_id" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="course_id" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="saml_id" TYPE="char" LENGTH="55" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="course_id" TYPE="char" LENGTH="55" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="blocked" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="source" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="creation" TYPE="char" LENGTH="20" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>

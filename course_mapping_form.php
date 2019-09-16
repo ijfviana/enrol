@@ -40,7 +40,7 @@ class course_mapping_editadvanced_form extends moodleform {
         $mform->addElement('text', 'saml_id', get_string('saml_id', 'enrol_saml'), 'size="20"');
         $mform->addHelpButton('saml_id', 'saml_id', 'enrol_saml');
         https://docs.moodle.org/dev/lib/formslib.php_Form_Definition#Most_Commonly_Used_PARAM_.2A_Types
-        $mform->setType('saml_id', PARAM_ALPHAEXT);
+        $mform->setType('saml_id', PARAM_ALPHANUMEXT);
 
 
 
@@ -62,7 +62,7 @@ class course_mapping_editadvanced_form extends moodleform {
         $new_mapping = (object) $data;
         //$course_mapping    = $DB->get_record('course_mapping', array('saml_id' => $new_mapping->saml_id));
 
-        if ($new_mapping->saml_id == '') {
+        if (!$new_mapping->saml_id) {
             $errors['course_mapping'] = get_string('nosamlid', 'enrol_saml');
         }
 
