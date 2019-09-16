@@ -19,8 +19,8 @@ function xmldb_enrol_saml_upgrade($oldversion) {
         // Define field id to be added to course_mapping.
         $table = new xmldb_table('course_mapping');
         $table->add_field('id', XMLDB_TYPE_INTEGER, '18', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null, null);
-        $table->add_field('saml_id', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, '0', 'id');
-        $table->add_field('course_id', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, '0', 'saml_id');
+        $table->add_field('saml_id', XMLDB_TYPE_CHAR, '55', null, XMLDB_NOTNULL, null, '0', 'id');
+        $table->add_field('course_id', XMLDB_TYPE_CHAR, '55', null, XMLDB_NOTNULL, null, '0', 'saml_id');
         $table->add_field('blocked', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'course_id');
         $table->add_field('source', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'blocked');
         $table->add_field('creation', XMLDB_TYPE_CHAR, '20', null, XMLDB_NOTNULL, null, '0', 'source');
