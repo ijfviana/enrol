@@ -16,16 +16,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @author  Erlend Strømsvik - Ny Media AS
- * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
- * @package auth/saml
+ * Exports to a csv file all course mappings
  *
- * Authentication Plugin: SAML based SSO Authentication
- *
- * Authentication using SAML2 with SimpleSAMLphp.
- *
- * Based on plugins made by Sergio Gómez (moodle_ssp) and Martin Dougiamas (Shibboleth).
+ * @package    enrol
+ * @subpackage saml
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 // We load all moodle config and libs.
 require_once(dirname(dirname(__DIR__)) . '/config.php');
 require_once($CFG->dirroot . '/enrol/saml/locallib.php');

@@ -1,12 +1,30 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 // No se puede acceder si no hay courses
+
+
+/**
+ * Calls a form for adding a new course mapping or
+ * edit an existing one.
+ *
+ * @package    enrol
+ * @subpackage saml
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 require('../../config.php');
 require_once('course_mapping_form.php');
 require_once('locallib.php');
@@ -17,9 +35,11 @@ require_once($CFG->libdir . '/authlib.php');
 $mappingid = optional_param('mappingid', 0, PARAM_INT);
 
 global $DB;
-//require_login($course);
-//require_capability('enrol/saml:config', $context);
 
+
+navigation_node::override_active_url(
+        new moodle_url('/enrol/saml/course_mapping.php')
+    );
 
 $PAGE->set_url('/enrol/saml/edit_course_mapping.php', ['mappingid' => $mappingid]);
 $PAGE->set_pagelayout('admin');
@@ -32,64 +52,63 @@ if (!enrol_is_enabled('saml')) {
     redirect($return);
 }
 
-
-if($mappingid){
+$mappingcourse = null;
+if ($mappingid) {
     $mappingcourse = $DB->get_record('course_mapping', ['id' => $mappingid], '*', MUST_EXIST);
     $courses = get_courses_not_mapped($mappingcourse->id);
-}else{
+} else {
     $courses = get_courses_not_mapped();
 }
 
+if (!empty($courses)) {
+
+
+    $mform = new course_mapping_editadvanced_form($PAGE->url, ['courses' => $courses, 'mappingcourse' => $mappingcourse]);
 
 
 
-$mform = new course_mapping_editadvanced_form($PAGE->url, ['courses' => $courses]);
+    if ($mform->is_cancelled()) {
+        redirect($return);
+    } else if ($fromform = $mform->get_data()) {
+
+        $time = time();
+
+        $keys = array_keys($courses);
+
+        $course = $courses[$keys[$fromform->course_moodle]];
+
+        if (!$mappingid) { //New Course Mapping
+            $fields = [
+                'saml_id' => $fromform->saml_id,
+                //select devuelve un numero del 0 al ...
+                //ponemos el id del curso al que le corresponda esa posición
+                'course_id' => $course->shortname,
+                'blocked' => $fromform->blocked,
+                'source' => 0,
+                'creation' => $time
+            ];
+            //new entry in course_mapping table
+            $DB->insert_record('course_mapping', $fields);
+        } else {  //Edit Course Mapping
+            global $DB;
+            $mapping = $DB->get_record('course_mapping', ['id' => $mappingid], '*', MUST_EXIST);
 
 
+            $mapping->saml_id = $fromform->saml_id;
+            $mapping->course_id = $course->shortname;
+            $mapping->blocked = $fromform->blocked;
+            $mapping->modified = $time;
+            update_course_mapping($mapping);
+        }
 
-if ($mform->is_cancelled()) {
-    redirect($return);
-} else if ($fromform = $mform->get_data()) {
-
-    $time = time();
-
-    $keys = array_keys($courses);
-    
-    $course = $courses[$keys[$fromform->course_moodle]];
-
-    if (!$mappingid) { //New Course Mapping
-        
-        
-
-        $fields = [
-            'saml_id' => $fromform->saml_id,
-            //select devuelve un numero del 0 al ...
-            //ponemos el id del curso al que le corresponda esa posición
-            'course_id' => $course->shortname,
-            'blocked' => $fromform->blocked,
-            'source' => 0,
-            'creation' => $time
-        ];
-        //new entry in course_mapping table
-        $DB->insert_record('course_mapping', $fields);
-    } else {  //Edit Course Mapping
-        
-        global $DB;
-        $mapping = $DB->get_record('course_mapping', ['id' => $mappingid], '*', MUST_EXIST);
-
-
-        $mapping->saml_id = $fromform->saml_id;
-        $mapping->course_id = $course->shortname;
-        $mapping->blocked = $fromform->blocked;
-        $mapping->modified = $time;
-        update_course_mapping($mapping);
+        redirect($return);
     }
 
+
+    echo $OUTPUT->header();
+    echo $OUTPUT->heading(get_string('pluginname', 'enrol_saml'));
+    $mform->display();
+    echo $OUTPUT->footer();
+} else {
     redirect($return);
 }
-
-
-echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('pluginname', 'enrol_saml'));
-$mform->display();
-echo $OUTPUT->footer();

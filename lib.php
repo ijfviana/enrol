@@ -432,7 +432,7 @@ class enrol_saml_plugin extends enrol_plugin {
                     $data = $this->db_decode($fields);
                     if ($this->course_mapping_conditions($trace, $data, $update) && $active) {
 
-                        $this->delete_when_same_mapping($trace, $data, $external);
+                        $this->delete_when_same_ext_mapping($trace, $data, $external);
                     }
                 }
 
@@ -471,7 +471,16 @@ class enrol_saml_plugin extends enrol_plugin {
         return 0;
     }
 
-    protected function delete_when_same_mapping(progress_trace &$trace, $data, &$external) {
+    /**
+     * Deletes from $external array all duplicate course mappings, to 
+     * know which ones are no longer present on the external database
+     *
+     *
+     * @param progress_trace $trace
+     * @param array $data
+     * @param array $external
+     */
+    protected function delete_when_same_ext_mapping(progress_trace &$trace, $data, &$external) {
 
         foreach ($external as $key => $value) {
 
@@ -484,6 +493,15 @@ class enrol_saml_plugin extends enrol_plugin {
         }
     }
 
+    /**
+     * Here we validate which external course mappings should be
+     * ignored, updated or inserted
+     *
+     *
+     * @param progress_trace $trace
+     * @param array $data
+     * @param int $update
+     */
     protected function course_mapping_conditions(progress_trace $trace, $data, $update) {
         global $CFG, $DB;
         require_once($CFG->dirroot . '/enrol/saml/locallib.php');
@@ -502,6 +520,8 @@ class enrol_saml_plugin extends enrol_plugin {
                     $data['id'] = $mapping->id;
                     update_course_mapping($data);
                     $trace->output("update course mapping detected: course id: " . $data['course_id'] . " saml id: " . $data['saml_id'], 1);
+                    
+                    
                 } else {
                     $trace->output("can not insert new course mapping, duplicate detected: course id: " . $data['course_id'] . " saml id: " . $data['saml_id'], 1);
                 }
@@ -546,6 +566,11 @@ class enrol_saml_plugin extends enrol_plugin {
         return $res;
     }
 
+    /**
+     * Returns all external mappings previously inserted 
+     *
+     * @return StdObject() false if not found
+     */
     protected function get_external_source_mappings() {
         global $DB;
 
@@ -597,6 +622,12 @@ class enrol_saml_plugin extends enrol_plugin {
         }
     }
 
+    /**
+     * Validates if a course mappings already exists.
+     * 
+     * @param StdObject() $data
+     * @return true if the course_id field exists.
+     */
     protected function course_mapping_exists($data) {
         global $DB;
 

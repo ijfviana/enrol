@@ -1,20 +1,33 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Shows a table with all course mappings. Mappings are shown by pages of 10.
+ * Gives the option to edit a course mapping if it source was internal (admin manualy created it).
+ * Columns can be asorted and filtered by the admin.
+ *
+ * @package    enrol
+ * @subpackage saml
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require('../../config.php');
-
 require_once('locallib.php');
 require_once('mapping_filter.php');
 require_once($CFG->libdir . '/adminlib.php');
-
-//require_once($CFG->dirroot . '/user/filters/lib.php');
-//require_once($CFG->dirroot . '/user/lib.php');
-
 
 
 $delete = optional_param('delete', 0, PARAM_INT);
@@ -23,29 +36,17 @@ $confirmuser = optional_param('confirmuser', 0, PARAM_INT);
 $sort = optional_param('sort', 'saml_id', PARAM_ALPHAEXT);
 $dir = optional_param('dir', 'ASC', PARAM_ALPHA);
 $page = optional_param('page', 0, PARAM_INT);
-$perpage = optional_param('perpage', 5, PARAM_INT);        // how many per page
+$perpage = optional_param('perpage', 10, PARAM_INT);        // how many per page
 $acl = optional_param('acl', '0', PARAM_INT);           // id of user to tweak mnet ACL (requires $access)
 $suspend = optional_param('suspend', 0, PARAM_INT);
 $unsuspend = optional_param('unsuspend', 0, PARAM_INT);
 
-/*
-$PAGE->set_title("Course Mappings");
-$PAGE->set_heading("SAML Course Mappings");
-$PAGE->set_url($CFG->wwwroot .'enrol/saml/course_mapping.php');
-$PAGE->set_pagelayout('admin');
 
-
-
-$sitecontext = context_system::instance();
-$site = get_site();
-
-$PAGE->set_context($sitecontext);
-*/
 
 admin_externalpage_setup('course_mappings');
 
-    $sitecontext = context_system::instance();
-    $site = get_site();
+$sitecontext = context_system::instance();
+$site = get_site();
 
 
 if (!is_siteadmin()) {
@@ -117,10 +118,11 @@ if ($confirmuser) {
     redirect($returnurl);
 }
 
-// create the user filter form
-//$ufiltering = new mapping_filtering();
+
+
 echo $OUTPUT->header();
 
+// create the map filter form
 $filter = new mapping_filtering();
 $context = context_system::instance();
 
@@ -144,7 +146,7 @@ foreach ($columns as $column) {
 
 list($extrasql, $params) = $filter->get_sql_filter();
 $courses = get_course_map_listing($sort, $dir, $page * $perpage, $perpage, '', $extrasql, $params);
-//$courses = get_some_course_mapping($page * $perpage, $perpage);
+
 
 $coursescount = course_mapping_count();
 $coursesearchcount = course_mapping_count($extrasql, $params);
@@ -179,9 +181,10 @@ if (!$courses) {
 
     $table->head[] = $saml_id;
 
+
     $table->head[] = $course_id;
 
-    $table->head[] = get_string('active');
+    $table->head[] = get_string('active', 'enrol_saml');
 
     $table->head[] = $source;
 
@@ -242,9 +245,12 @@ if (!$courses) {
 
         $row = [];
         $row[] = $course->saml_id;
-        $row[] = $course->course_id;
 
-        $row[] = $status;
+        $course_link = $DB->get_record('course', ['shortname' => $course->course_id], '*', MUST_EXIST);
+        $row[] = "<a href=\"$CFG->wwwroot/course/view.php?id=$course_link->id\">$course->course_id</a>";
+
+
+        $row[] = "<a href=\"$CFG->wwwroot/enrol/saml/edit.php?courseid=$course_link->id\">$status</a>";
         $row[] = $fuente;
         $row[] = $course->creation;
         $row[] = $course->modified;
@@ -260,8 +266,9 @@ if (!$courses) {
         $table->data[] = $row;
     }
 }
-
-//echo html_writer::link(new moodle_url("/admin/settings.php?section=enrolsettingssaml", get_string('returntosettings', 'enrol_saml')));
+echo '</p>';
+echo html_writer::link(new moodle_url("/admin/settings.php?section=enrolsettingssaml"), get_string('returntosettings', 'enrol_saml'));
+echo '</p>';
 //html_writer::link(new moodle_url('/admin/settings.php', array('section'=>'filtersetting'.$filter)), get_string('settings'));
 // add filters
 $filter->display_add();

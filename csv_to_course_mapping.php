@@ -1,18 +1,28 @@
 <?php
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Returns something fancy
+ * Calls a form used for importing course mappings
+ * from a csv file
  *
- * @global moodle_database $DB
- * @global moodle_page $PAGE
- * @global core_renderer $OUTPUT
+ * @package    enrol
+ * @subpackage saml
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 // We load all moodle config and libs.
 require_once(dirname(dirname(__DIR__)) . '/config.php');
 require_once($CFG->dirroot . '/enrol/saml/locallib.php');
@@ -85,6 +95,8 @@ if ($mform->is_cancelled()) {
 
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('importmapping', 'enrol_saml'));
-//echo html_writer::link(new moodle_url('/admin/settings.php?section=enrolsettingssaml', get_string('returntosettings', 'enrol_saml')));
+echo '</p>';
+echo html_writer::link(new moodle_url("/admin/settings.php?section=enrolsettingssaml"), get_string('returntosettings', 'enrol_saml'));
+echo '</p>';
 $mform->display();
 echo $OUTPUT->footer();

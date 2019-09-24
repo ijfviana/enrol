@@ -52,3 +52,76 @@ $string['group_prefix'] = 'Prefijo para grupos manipulados';
 $string['group_prefix_description'] = 'Define un prefijo si quieres que la extensión únicamente manipule aquellos grupos que tengan dicho prefijo. Deja el campo en blanco para manapular cualquier grupo. Campo multi-valor separados por comas';
 $string['created_group_info'] = 'Descripción para nuevos grupos';
 $string['created_group_info_description'] = 'Establece en este campo el texto que será asociado a la descripción de los grupos creados por la extensión';
+
+
+
+$string['active'] = 'Estado SAML';
+
+$string['blocked'] = 'Suspendido';
+$string['blocked_help'] = 'Seleccionar si esta entrada podrá ser modificado por el administrador';
+$string['check_mapping'] = 'Seleccionar mapeos de cursos';
+$string['course_id'] = 'ID Curso Moodle';
+
+$string['course_map'] = 'Mapeo de Cursos';
+$string['course_moodle'] = 'Nombre corto del Curso Moodle';
+$string['course_moodle_help'] = 'Seleccionar el nombre corto del curso Moodle que quiere mapear';
+$string['creation'] = 'Creación';
+$string['csv_to_course_mapping'] = 'Importar CSV a Mapeo de Curso';
+
+$string['deletecheckfullmapping'] = 'De verdad quiere eliminar el mapeo de cursos {$a}';
+$string['deletemapping'] = 'Eliminar mapeo de curso';
+
+
+$string['edit'] = "Editar mapeo de curso";
+
+
+$string['suspendmap'] = "Suspender mapeo de curso";
+
+$string['unsuspendmap'] = "Habilitar mapeo de curso";
+
+
+$string['enrol_saml_coursemapping'] = "Mapeo de Cursos";
+$string['enrol_saml_coursemapping_head'] = "El IdP puede usar su propio shortname para este curso. Introduzca en esta sección el mapeo entre el IdP y el curso Moodle. Acepta valores separados por comas.";
+
+$string['enrol_saml_courses'] = 'SAML course mapping';
+$string['enrol_saml_courses_description'] = 'Atributo SAML que contiene los datos de los cursos (por defecto es schacUserStatus)';
+$string['enrol_saml_courses_not_found'] = "El IdP ha devuelto un conjunto de datos que no contiene el campo donde Moodle espera encontrar los cursos ({\$a}). Este campo es obligatorio para automatricular al usuario.";
+
+$string['enrol_saml_ignoreinactivecourses'] = 'Ignorar Inactivos';
+$string['enrol_saml_ignoreinactivecourses_description'] = "Si no está activado el plugin dará de baja de los cursos a los usuarios 'inactivos'";
+
+$string['enrol_saml_supportcourses'] = 'Soportar matriculación SAML';
+$string['enrol_saml_supportcourses_description'] = 'Selecciona Interna o Externa para que Moodle a través del plugin enrol/saml automatricule al usuario (Usa Externa si tu asignación de cursos está en una base de datos externa';
+
+$string['externalmappings'] = 'Mapeos de cursos olvidados';
+$string['externalmappings_desc'] = 'Los mapeos de cursos que ya no figuren en la BD externa quedaran marcado con cursos SAML inactivos';
+
+$string['ignore_mapping'] = 'Ignorar mapeos duplicados';
+$string['import'] = 'Importar';
+$string['importmapping'] = 'Importar Mapeos de Cursos de .csv';
+$string['importmappingreview'] = 'Resultados de la Importación de Mapeos de Cursos ';
+
+
+$string['import_event'] = 'Evento importar ';
+$string['source_external'] = 'Externo';
+$string['source_internal'] = 'Interno';
+$string['saml_id'] = 'id Curso en IDP ';
+$string['saml_id_help'] = 'Introduzca el id del curso en el IdP que corresponda con el curso Moodle';
+$string['source'] = 'Fuente';
+$string['mappingfile'] = '.csv con mapeo de cursos';
+$string['mappingfile_help'] = '.csv con columnass saml_id como id curso IdP and course_id como shortname curso Moodle';
+$string['mapping_export'] = 'Exportar mapeo de cursos';
+$string['mapping_import'] = "Importas mapeo de cursos";
+$string['new_mapping'] = "Nuevo mapeo de curso";
+$string['nocoursesfound'] = 'No se encontró ningún mapeo de cursos';
+$string['nosamlid'] = 'id del curson IdP no puede ser vacío ó 0';
+
+
+$string['returntosettings'] = 'Volver a Configuración';
+
+$string['update_mapping'] = 'Actualizar mapeos duplicados';
+$string['updatemappings_desc'] = 'Actualizar los mapeos duplicados de la BD externa. Las entradas actualizadas aparecerán como modificadas';
+
+
+$string['modified'] = 'Modificado';
+$string['task_updatecoursemappings'] = 'Tarea sincronizar mapeo de cursos';

@@ -22,6 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['active'] = 'SAML Status';
 $string['assignrole'] = 'Assignrole';
 $string['blocked'] = 'Blocked';
 $string['blocked_help'] = 'Check wherever this entry should be modified by the admin or not';
@@ -81,7 +82,7 @@ $string['pluginname'] = 'SAML enrolments';
 $string['pluginname_desc'] = 'The saml enrolments plugin allows users to be auto-enrolled in courses when login using the auth/saml plugin based on the data provided by the Identity Provider. (be sure you provide the course mapping and the role mapping on the settings of the auth/saml plugin';
 $string['saml_id'] = 'IDP Course id';
 $string['saml_id_help'] = 'Enter the id of the course on the IDP that corresponds with the course in Moodle';
-$string['source'] = 'Fuente';
+$string['source'] = 'Source';
 $string['status'] = 'Enable saml enrolments';
 $string['status_desc'] = 'Allow course access of internally enrolled users. This should be kept enabled in most cases.';
 $string['status_help'] = 'This setting determines whether users can be auto-enrolled via saml login.';
