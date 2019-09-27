@@ -24,6 +24,18 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+//este formulario aparece al instalar el modulo
+//https://docs.moodle.org/dev/Admin_settings
+
+if ($hassiteconfig) {
+    
+    $pluginname = get_string('pluginname', 'enrol_saml');
+    $ADMIN->add('root', new admin_category('saml', get_string('pluginname', 'enrol_saml')));
+    
+    $ADMIN->add('saml', new admin_externalpage('course_mappings', new lang_string('course_map','enrol_saml'), "$CFG->wwwroot/enrol/saml/course_mapping.php", array('enrol/saml:config')));
+    $ADMIN->add('saml', new admin_externalpage('csv_to_course_mapping', new lang_string('csv_to_course_mapping','enrol_saml'), "$CFG->wwwroot/enrol/saml/csv_to_course_mapping.php", array('enrol/saml:config')));
+
+}
 if ($ADMIN->fulltree) {
     // General settings.
     $settings->add(
@@ -109,4 +121,117 @@ if ($ADMIN->fulltree) {
             )
         );
     }
+    
+    $name = 'enrol_saml/supportcourses';
+    $title = get_string('enrol_saml_supportcourses', 'enrol_saml');
+    $description = get_string('enrol_saml_supportcourses_description', 'enrol_saml');
+    $default = "nosupport";
+    $choices = [
+        "nosupport" => "nosupport",
+        "internal" => "internal",
+        "external" => "external"
+    ];
+    $setting = new admin_setting_configselect($name, $title, $description, $default, $choices);
+    $settings->add($setting);
+    
+    $name = 'enrol_saml/courses';
+    $title = get_string('enrol_saml_courses', 'enrol_saml');
+    $description = get_string('enrol_saml_courses_description', 'enrol_saml');
+    $default = 'schacUserStatus';
+    $setting = new admin_setting_configtext($name, $title, $description, $default, PARAM_RAW);
+    $settings->add($setting);
+    
+    $name = 'enrol_saml/ignoreinactivecourses';
+    $title = get_string('enrol_saml_ignoreinactivecourses', 'enrol_saml');
+    $description = get_string('enrol_saml_ignoreinactivecourses_description', 'enrol_saml');
+    $default = true;
+    $setting = new admin_setting_configcheckbox($name, $title, $description, $default, true, false);
+    $settings->add($setting);
+    
+    
+    $options = array('', "access", "ado_access", "ado", "ado_mssql", "borland_ibase", "csv", "db2", "fbsql", "firebird", "ibase", "informix72", "informix", "mssql", "mssql_n", "mssqlnative", "mysqli", "mysqlt", "oci805", "oci8", "oci8po", "odbc", "odbc_mssql", "odbc_oracle", "oracle", "pdo", "postgres64", "postgres7", "postgres", "proxy", "sqlanywhere", "sybase", "vfp");
+    $options = array_combine($options, $options);
+    $settings->add(new admin_setting_configselect('enrol_saml/dbtype', get_string('dbtype', 'enrol_database'), get_string('dbtype_desc', 'enrol_database'), '', $options));
+
+    $settings->add(new admin_setting_configtext('enrol_saml/dbhost', get_string('dbhost', 'enrol_database'), get_string('dbhost_desc', 'enrol_database'), 'localhost'));
+
+    $settings->add(new admin_setting_configtext('enrol_saml/dbuser', get_string('dbuser', 'enrol_database'), '', ''));
+
+    $settings->add(new admin_setting_configpasswordunmask('enrol_saml/dbpass', get_string('dbpass', 'enrol_database'), '', ''));
+
+    $settings->add(new admin_setting_configtext('enrol_saml/dbname', get_string('dbname', 'enrol_database'), get_string('dbname_desc', 'enrol_database'), ''));
+
+    $settings->add(new admin_setting_configtext('enrol_saml/dbencoding', get_string('dbencoding', 'enrol_database'), '', 'utf-8'));
+    
+    $options = [
+        "noupdate" => "noupdate",
+        "update" => "update"
+    ];
+    $settings->add(new admin_setting_configselect('enrol_saml/updatemappings', get_string('update_mapping', 'enrol_saml'), get_string('updatemappings_desc', 'enrol_saml'), 0, $options));
+    
+    $options = [
+        "ignore" => "ignore",
+        "notactive" => "notactive"
+    ];
+    $settings->add(new admin_setting_configselect('enrol_saml/externalmappings', get_string('externalmappings', 'enrol_saml'), get_string('externalmappings_desc', 'enrol_saml'), 0, $options));
+    
+    
+    
+
+    
+    
+    $settings->add(
+    new admin_setting_heading(
+        'enrol_saml/coursemapping',
+        new lang_string('enrol_saml_coursemapping', 'enrol_saml'),
+        new lang_string('enrol_saml_coursemapping_head', 'enrol_saml')
+    ));
+    
+    
+    
+    $courses = get_courses();
+    
+
+
+    if (!empty($courses)) {
+    
+        
+        $settings->add(
+            new enrol_saml_admin_setting_special_link(
+                'enrol_saml/check_mapping',
+                new lang_string('check_mapping', 'enrol_saml'),
+                $CFG->wwwroot.'/enrol/saml/course_mapping.php'
+            )
+        );
+        
+        $settings->add(
+            new enrol_saml_admin_setting_special_link(
+                'enrol_saml/new_mapping',
+                new lang_string('new_mapping', 'enrol_saml'),
+                $CFG->wwwroot.'/enrol/saml/edit_course_mapping.php'
+            )
+        );
+        
+        $settings->add(
+            new enrol_saml_admin_setting_special_link(
+                'enrol_saml/mapping_export',
+                new lang_string('mapping_export', 'enrol_saml'),
+                $CFG->wwwroot.'/enrol/saml/course_mappings_to_csv.php'
+            )
+        );
+        
+        $settings->add(
+            new enrol_saml_admin_setting_special_link(
+                'enrol_saml/mapping_import',
+                new lang_string('mapping_import', 'enrol_saml'),
+                $CFG->wwwroot.'/enrol/saml/csv_to_course_mapping.php'
+            )
+        );
+    }
+    
+    require_once($CFG->dirroot.'/enrol/saml/classes/admin_setting_special_javascript.php');
+    $setting = new enrol_saml_admin_setting_javascript();
+    $settings->add($setting);
+    
+
 }

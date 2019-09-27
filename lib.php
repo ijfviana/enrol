@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -30,6 +31,9 @@ class enrol_saml_plugin extends enrol_plugin {
      * @return string
      */
     public function get_instance_name($instance) {
+        // Data manipulation API - https://docs.moodle.org/dev/Data_manipulation_API#DB_object
+        //
+      //Para hacer que el objeto DB esté disponible en nuestro ámbito local, como dentro de una función:
         global $DB;
 
         if (empty($instance->name)) {
@@ -40,8 +44,10 @@ class enrol_saml_plugin extends enrol_plugin {
                 $role = '';
             }
             $enrol = $this->get_name();
-            return get_string('pluginname', 'enrol_'.$enrol) . $role;
+            return get_string('pluginname', 'enrol_' . $enrol) . $role;
         } else {
+            //https://docs.moodle.org/dev/Output_functions
+            //Función para imprimir cualquier  html / plain / markdown / moodle texto
             return format_string($instance->name);
         }
     }
@@ -73,7 +79,7 @@ class enrol_saml_plugin extends enrol_plugin {
      */
     public function add_course_navigation($instancesnode, stdClass $instance) {
         if ($instance->enrol !== 'saml') {
-             throw new coding_exception('Invalid enrol instance type!');
+            throw new coding_exception('Invalid enrol instance type!');
         }
 
         $context = context_course::instance($instance->courseid);
@@ -101,25 +107,17 @@ class enrol_saml_plugin extends enrol_plugin {
         if (has_capability('enrol/saml:manage', $context)) {
             $managelink = new moodle_url("/enrol/saml/manage.php", ['enrolid' => $instance->id]);
             $icons[] = $OUTPUT->action_icon(
-                $managelink,
-                new pix_icon(
-                    'i/users',
-                    get_string('enrolusers', 'enrol_saml'),
-                    'core',
-                    ['class' => 'iconsmall']
-                )
+                    $managelink, new pix_icon(
+                    'i/users', get_string('enrolusers', 'enrol_saml'), 'core', ['class' => 'iconsmall']
+                    )
             );
         }
         if (has_capability('enrol/saml:config', $context)) {
             $editlink = new moodle_url("/enrol/saml/edit.php", ['courseid' => $instance->courseid]);
             $icons[] = $OUTPUT->action_icon(
-                $editlink,
-                new pix_icon(
-                    'i/edit',
-                    get_string('edit'),
-                    'core',
-                    ['class' => 'icon']
-                )
+                    $editlink, new pix_icon(
+                    'i/edit', get_string('edit'), 'core', ['class' => 'icon']
+                    )
             );
         }
 
@@ -136,7 +134,7 @@ class enrol_saml_plugin extends enrol_plugin {
 
         $context = context_course::instance($courseid, MUST_EXIST);
 
-        if (!has_capability('moodle/course:enrolconfig', $context) or !has_capability('enrol/saml:config', $context)) {
+        if (!has_capability('moodle/course:enrolconfig', $context) or ! has_capability('enrol/saml:config', $context)) {
             return null;
         }
 
@@ -199,7 +197,7 @@ class enrol_saml_plugin extends enrol_plugin {
     }
 
     public function sync_user_enrolments($user) {
-        // Configuration is in the auth_saml config file. (Not in the enrol/saml).
+
         $samlpluginconfig = get_config('auth_saml');
         $enrolpluginconfig = get_config('enrol_saml');
 
@@ -210,7 +208,7 @@ class enrol_saml_plugin extends enrol_plugin {
 
         global $DB, $SAML_COURSE_INFO, $err;
 
-        if ($samlpluginconfig->supportcourses != 'nosupport') {
+        if ($enrolpluginconfig->supportcourses != 'nosupport') {
             if (!isset($samlpluginconfig->moodlecoursefieldid)) {
                 $samlpluginconfig->moodlecoursefieldid = 'shortname';
             }
@@ -230,7 +228,7 @@ class enrol_saml_plugin extends enrol_plugin {
                                     $delcourseids = array_keys($SAML_COURSE_INFO->mapped_courses[$role]['inactive']);
                                 }
                             }
-                            if (!$samlpluginconfig->ignoreinactivecourses) {
+                            if (!$enrolpluginconfig->ignoreinactivecourses) {
                                 foreach ($delcourseids as $courseid) {
                                     // Check that is not listed on $newcourseids.
                                     if (in_array($courseid, $newcourseids)) {
@@ -246,8 +244,7 @@ class enrol_saml_plugin extends enrol_plugin {
                                             $instance = $plugin->get_or_create_instance($course);
                                             if (!empty($instance)) {
                                                 $plugin->unenrol_user($instance, $user->id);
-                                                $this->enrol_saml_log_info($user->username.' unenrolled in course '.$course->shortname, $enrolpluginconfig->logfile);
-
+                                                $this->enrol_saml_log_info($user->username . ' unenrolled in course ' . $course->shortname, $enrolpluginconfig->logfile);
                                             }
                                         }
                                     }
@@ -262,17 +259,14 @@ class enrol_saml_plugin extends enrol_plugin {
                                     $instance = $plugin->get_or_create_instance($course);
                                     if (empty($instance)) {
                                         $err['enrollment'][] = get_string(
-                                            "error_instance_creation",
-                                            "role_saml",
-                                            $role,
-                                            $course->id
+                                                "error_instance_creation", "role_saml", $role, $course->id
                                         );
-                                        $this->enrol_saml_log_error("error enrolling ".$user->username.' with role '.$role.' on course '.$course->shortname, $enrolpluginconfig->logfile);
+                                        $this->enrol_saml_log_error("error enrolling " . $user->username . ' with role ' . $role . ' on course ' . $course->shortname, $enrolpluginconfig->logfile);
                                     } else {
                                         $context = context_course::instance($course->id);
                                         if (!user_has_role_assignment($user->id, $moodlerole->id, $context->id)) {
                                             $plugin->enrol_user($instance, $user->id, $moodlerole->id, 0, 0, 0);
-                                            $this->enrol_saml_log_info($user->username.' enrolled in course '.$course->shortname.' with role '.$role, $enrolpluginconfig->logfile);
+                                            $this->enrol_saml_log_info($user->username . ' enrolled in course ' . $course->shortname . ' with role ' . $role, $enrolpluginconfig->logfile);
                                             // Last parameter (status) 0->active  1->suspended.
                                         }
                                         $this->assign_group($SAML_COURSE_INFO->mapped_courses[$role]['active'][$courseid], $course, $user, $enrolpluginconfig, $prefixes);
@@ -286,7 +280,7 @@ class enrol_saml_plugin extends enrol_plugin {
                 }
             } catch (Exception $e) {
                 $err['enrollment'][] = $e->getMessage();
-                $this->enrol_saml_log_error("Enrol process for user ".$user->username.' stopped.'.$e->getMessage(), $enrolpluginconfig->logfile);
+                $this->enrol_saml_log_error("Enrol process for user " . $user->username . ' stopped.' . $e->getMessage(), $enrolpluginconfig->logfile);
             }
 
             unset($SAML_COURSE_INFO->mapped_courses);
@@ -322,9 +316,9 @@ class enrol_saml_plugin extends enrol_plugin {
                         $newgroupdata = new stdClass();
                         $newgroupdata->name = $groupname;
                         $newgroupdata->courseid = $course->id;
-                        $newgroupdata->description = isset($enrolpluginconfig->created_group_info)? $enrolpluginconfig->created_group_info : '';
+                        $newgroupdata->description = isset($enrolpluginconfig->created_group_info) ? $enrolpluginconfig->created_group_info : '';
                         $groupid = groups_create_group($newgroupdata);
-                        $this->enrol_saml_log_info('Group '.$groupname.' created on course '.$course->shortname, $enrolpluginconfig->logfile);
+                        $this->enrol_saml_log_info('Group ' . $groupname . ' created on course ' . $course->shortname, $enrolpluginconfig->logfile);
                     }
                     $groups = groups_get_all_groups($course->id, $user->id);
                     $found = false;
@@ -336,13 +330,13 @@ class enrol_saml_plugin extends enrol_plugin {
                             $matchesprefix = $this->group_matches_prefixes($group->name, $prefixes);
                             if ($matchesprefix) {
                                 groups_remove_member($group->id, $user->id);
-                                $this->enrol_saml_log_info($user->username.' unassigned from group '.$group->name.' from course '.$course->shortname, $enrolpluginconfig->logfile);
+                                $this->enrol_saml_log_info($user->username . ' unassigned from group ' . $group->name . ' from course ' . $course->shortname, $enrolpluginconfig->logfile);
                             }
                         }
                     }
                     if (!$found) {
                         groups_add_member($groupid, $user->id, 'enrol_saml');
-                        $this->enrol_saml_log_info($user->username.' assigned to group '.$groupname.' from course '.$course->shortname, $enrolpluginconfig->logfile);
+                        $this->enrol_saml_log_info($user->username . ' assigned to group ' . $groupname . ' from course ' . $course->shortname, $enrolpluginconfig->logfile);
                     }
                 }
             }
@@ -371,7 +365,7 @@ class enrol_saml_plugin extends enrol_plugin {
     }
 
     private function auth_saml_decorate_log($msg, $level = "error") {
-        return $msg = date('D M d H:i:s  Y').' [client '.$_SERVER['REMOTE_ADDR'].'] ['.$level.'] '.$msg."\r\n";
+        return $msg = date('D M d H:i:s  Y') . ' [client ' . $_SERVER['REMOTE_ADDR'] . '] [' . $level . '] ' . $msg . "\r\n";
     }
 
     /**
@@ -395,6 +389,255 @@ class enrol_saml_plugin extends enrol_plugin {
         $context = context_course::instance($instance->courseid);
         return has_capability('enrol/apply:config', $context);
     }
+
+    /**
+     * Performs a full sync with external database.
+     *
+     *
+     * @param progress_trace $trace
+     * @return int 0 means success, 1 db connect failure, 4 db read failure
+     */
+    public function update_course_mappings(progress_trace $trace, $update, $active) {
+        global $CFG, $DB;
+
+        // Make sure we sync either enrolments or courses.
+        if (!$this->get_config('dbtype')) {
+            $trace->output('Course synchronisation skipped.');
+            $trace->finished();
+            return 0;
+        }
+
+        $trace->output('Starting course mapping update...');
+
+        // We may need a lot of memory here.
+        core_php_time_limit::raise();
+        raise_memory_limit(MEMORY_HUGE);
+
+        if (!$extdb = $this->db_init($trace)) {
+            $trace->output('Error while communicating with external enrolment database');
+            $trace->finished();
+            return 1;
+        }
+
+        $external = $this->get_external_source_mappings();
+
+
+
+        $sql = "SELECT  course_id, saml_id, blocked from course_mapping";
+
+        if ($rs = $extdb->Execute($sql)) {
+            if (!$rs->EOF) {
+                while ($fields = $rs->FetchRow()) {
+                    $fields = array_change_key_case($fields, CASE_LOWER);
+                    $data = $this->db_decode($fields);
+                    if ($this->course_mapping_conditions($trace, $data, $update) && $active) {
+
+                        $this->delete_when_same_ext_mapping($trace, $data, $external);
+                    }
+                }
+
+
+
+                foreach ($external as $ex_mapping) {
+
+
+                    $courseid = $DB->get_record('course', ['shortname' => $ex_mapping->course_id]);
+                    if ($instance = $DB->get_record('enrol', ['enrol' => 'saml', 'courseid' => $courseid->id])) {
+                        if (!$instance->status) {
+
+
+
+                            $instance->status = 1;
+                            $DB->update_record('enrol', $instance);
+                            $trace->output("course mapping, is now inactive: course id: " . $ex_mapping->course_id . " saml id: " . $ex_mapping->saml_id, 1);
+                        }else{
+                            $trace->output("course mapping, was inactive: course id: " . $ex_mapping->course_id . " saml id: " . $ex_mapping->saml_id, 1);
+                        }
+                    }
+                }
+            }
+            $rs->Close();
+        } else {
+            $extdb->Close();
+            $trace->output('Error reading data from the external course table');
+            $trace->finished();
+            return 4;
+        }
+        // Close db connection.
+        $extdb->Close();
+        $trace->output('...course mapping synchronisation finished.');
+        $trace->finished();
+
+        return 0;
+    }
+
+    /**
+     * Deletes from $external array all duplicate course mappings, to 
+     * know which ones are no longer present on the external database
+     *
+     *
+     * @param progress_trace $trace
+     * @param array $data
+     * @param array $external
+     */
+    protected function delete_when_same_ext_mapping(progress_trace &$trace, $data, &$external) {
+
+        foreach ($external as $key => $value) {
+
+            $trace->output($data['saml_id'] . $value->saml_id . $data['course_id'] . $value->course_id);
+
+            if ($data['saml_id'] == $value->saml_id && $data['course_id'] == $value->course_id) {
+                unset($external[$key]);
+                break;
+            }
+        }
+    }
+
+    /**
+     * Here we validate which external course mappings should be
+     * ignored, updated or inserted
+     *
+     *
+     * @param progress_trace $trace
+     * @param array $data
+     * @param int $update
+     */
+    protected function course_mapping_conditions(progress_trace $trace, $data, $update) {
+        global $CFG, $DB;
+        require_once($CFG->dirroot . '/enrol/saml/locallib.php');
+
+        $entry = false;
+
+
+        if ($this->prepare($data)) {
+            $entry = true;
+
+            if ($this->course_mapping_exists($data) && $mapping = $DB->get_record('course_mapping', ['course_id' => $data['course_id']])) {
+                if ($update) {
+
+
+                    $data['modified'] = time();
+                    $data['id'] = $mapping->id;
+                    update_course_mapping($data);
+                    $trace->output("update course mapping detected: course id: " . $data['course_id'] . " saml id: " . $data['saml_id'], 1);
+                    
+                    
+                } else {
+                    $trace->output("can not insert new course mapping, duplicate detected: course id: " . $data['course_id'] . " saml id: " . $data['saml_id'], 1);
+                }
+            } else {
+                if ($DB->record_exists('course', ['shortname' => $data['course_id']])) {
+
+                    $data['creation'] = time();
+                    $data['source'] = (int) 1;
+                    //new entry in course_mapping table
+                    $DB->insert_record('course_mapping', $data);
+                    $trace->output("new course mapping inserted, course id: " . $data['course_id'] . " saml id: " . $data['saml_id'], 1);
+                } else {
+                    $trace->output("can not insert new course mapping, can not find course_id on table {ccourse}: course id: " . $data['course_id'], 1);
+                }
+            }
+        } else {
+            $trace->output("can not insert new course mapping, course id and saml id can not be empty", 1);
+        }
+        return $entry;
+    }
+
+    /**
+     * Validates and prepares the data.
+     *
+     * @return $res false if any error occured.
+     */
+    protected function prepare($data) {
+        global $DB;
+
+        $res = true;
+        $site = $DB->get_record('course', ['id' => SITEID]);
+
+        // Validate the shortname.
+        if (!empty($data['saml_id']) && !empty($data['course_id']) && $data['course_id'] != $site->shortname) {
+            if ($data['course_id'] !== clean_param($data['course_id'], PARAM_TEXT) && $data['saml_id'] !== clean_param($data['saml_id'], PARAM_ALPHAEXT)) {
+
+                $res = false;
+            }
+        } else {
+            $res = false;
+        }
+        return $res;
+    }
+
+    /**
+     * Returns all external mappings previously inserted 
+     *
+     * @return StdObject() false if not found
+     */
+    protected function get_external_source_mappings() {
+        global $DB;
+
+        return $DB->get_records('course_mapping', ['source' => 1]);
+    }
+
+    /**
+     * Tries to make connection to the external database.
+     *
+     * @return null|ADONewConnection
+     */
+    protected function db_init(progress_trace $trace) {
+        global $CFG;
+
+        require_once($CFG->libdir . '/adodb/adodb.inc.php');
+
+
+// Connect to the external database (forcing new connection).
+        $extdb = ADONewConnection($this->get_config('dbtype'));
+
+
+// The dbtype my contain the new connection URL, so make sure we are not connected yet.
+        if (!$extdb->IsConnected()) {
+            $result = $extdb->Connect($this->get_config('dbhost'), $this->get_config('dbuser'), $this->get_config('dbpass'), $this->get_config('dbname'), true);
+            if (!$result) {
+                return null;
+            }
+        }
+
+        $extdb->SetFetchMode(ADODB_FETCH_ASSOC);
+        if ($this->get_config('dbsetupsql')) {
+            $extdb->Execute($this->get_config('dbsetupsql'));
+        }
+        return $extdb;
+    }
+
+    protected function db_decode($text) {
+        $dbenc = $this->get_config('dbencoding');
+        if (empty($dbenc) or $dbenc == 'utf-8') {
+            return $text;
+        }
+        if (is_array($text)) {
+            foreach ($text as $k => $value) {
+                $text[$k] = $this->db_decode($value);
+            }
+            return $text;
+        } else {
+            return core_text::convert($text, $dbenc, 'utf-8');
+        }
+    }
+
+    /**
+     * Validates if a course mappings already exists.
+     * 
+     * @param StdObject() $data
+     * @return true if the course_id field exists.
+     */
+    protected function course_mapping_exists($data) {
+        global $DB;
+
+
+        $select = 'course_id = :course_id';
+        $params = ['course_id' => $data['course_id']];
+
+        return $DB->record_exists_select('course_mapping', $select, $params);
+    }
+
 }
 
 /**
@@ -404,7 +647,7 @@ class enrol_saml_plugin extends enrol_plugin {
  * @return mixed True if yes (some features may use other values)
  */
 function enrol_saml_supports($feature) {
-    switch($feature) {
+    switch ($feature) {
         case ENROL_RESTORE_TYPE:
             return ENROL_RESTORE_EXACT;
         default:
