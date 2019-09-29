@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -22,7 +23,6 @@
  * @subpackage saml
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 // We load all moodle config and libs.
 require_once(dirname(dirname(__DIR__)) . '/config.php');
 require_once($CFG->dirroot . '/enrol/saml/locallib.php');
@@ -39,9 +39,9 @@ if (!is_siteadmin()) {
 
 
 /*
-$PAGE->set_url('/enrol/saml/csv_to_course_mapping.php');
-$PAGE->set_pagelayout('admin');
-$PAGE->set_context(context_system::instance()); // SYSTEM context.
+  $PAGE->set_url('/enrol/saml/csv_to_course_mapping.php');
+  $PAGE->set_pagelayout('admin');
+  $PAGE->set_context(context_system::instance()); // SYSTEM context.
  * 
  */
 
@@ -73,14 +73,14 @@ if ($mform->is_cancelled()) {
     } else if ($readcount == 0) {
         print_error('csvemptyfile', 'error', $returnurl, $cir->get_error());
     }
-    
-    
+
+
 
     flush();
-    
+
     $mode = $fromform->mode;
     $parser = new mapping_parser($cir, $mode);
-    
+
     echo $OUTPUT->header();
     echo $OUTPUT->heading(get_string('importmappingreview', 'enrol_saml'));
     $parser->execute($PAGE->context);
@@ -89,6 +89,8 @@ if ($mform->is_cancelled()) {
 
     //echo $OUTPUT->confirm($returnurl, get_string('confirm'));
     echo $OUTPUT->continue_button($returnurl);
+    echo $OUTPUT->footer();
+    die;
 
     //redirect($returnurl);
 }

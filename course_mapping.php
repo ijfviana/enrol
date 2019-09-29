@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -23,7 +24,6 @@
  * @subpackage saml
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 require('../../config.php');
 require_once('locallib.php');
 require_once('mapping_filter.php');
@@ -252,8 +252,14 @@ if (!$courses) {
 
         $row[] = "<a href=\"$CFG->wwwroot/enrol/saml/edit.php?courseid=$course_link->id\">$status</a>";
         $row[] = $fuente;
-        $row[] = $course->creation;
-        $row[] = $course->modified;
+        $row[] = date("Y-m-d", $course->creation);
+        
+        if (!empty($course->modified)) {
+            $row[] = date("Y-m-d", $course->modified);
+        } else {
+            $row[] = $course->modified;
+        }
+
 
         if ($course->blocked) {
             foreach ($row as $k => $v) {

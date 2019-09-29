@@ -17,7 +17,7 @@ require_once($CFG->libdir . '/weblib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class uploadmapping_tracker {
-    
+
     /**
      * Constant to output HTML.
      */
@@ -71,13 +71,14 @@ class uploadmapping_tracker {
      * @param int $errors count of errors.
      * @return void
      */
-    public function results($total, $created, $updated, $errors) {
+    public function results($total, $created, $updated, $ignored, $errors) {
 
         $message = array(
-            get_string('coursestotal', 'tool_uploadcourse', $total),
-            get_string('coursescreated', 'tool_uploadcourse', $created),
-            get_string('coursesupdated', 'tool_uploadcourse', $updated),
-            get_string('courseserrors', 'tool_uploadcourse', $errors)
+            get_string('coursestotal', 'enrol_saml', $total),
+            get_string('coursescreated', 'enrol_saml', $created),
+            get_string('coursesupdated', 'enrol_saml', $updated),
+            get_string('coursesignored', 'enrol_saml', $ignored),
+            get_string('courseserrors', 'enrol_saml', $errors)
         );
 
 
@@ -110,8 +111,8 @@ class uploadmapping_tracker {
         echo html_writer::start_tag('tr', array('class' => 'r' . $this->rownb % 2));
         echo html_writer::tag('td', $line, array('class' => 'c' . $ci++));
         echo html_writer::tag('td', $outcome, array('class' => 'c' . $ci++));
-        echo html_writer::tag('td', isset($data['course_id']) ? $data['course_id'] : '', array('class' => 'c' . $ci++));
-        echo html_writer::tag('td', isset($data['saml_id']) ? $data['saml_id'] : '', array('class' => 'c' . $ci++));
+        echo html_writer::tag('td', isset($data['course_id']) ? $data['course_id'] . ' ' : '', array('class' => 'c' . $ci++));
+        echo html_writer::tag('td', isset($data['saml_id']) ? $data['saml_id'] . ' ' : '', array('class' => 'c' . $ci++));
         echo html_writer::end_tag('tr');
     }
 

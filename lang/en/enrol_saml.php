@@ -120,10 +120,11 @@ $string['task_updatecoursemappings'] = 'Synchronise course mappings task';
 
 
 
-
-
-
-
+$string['coursestotal'] = 'Total mappings: {$a}';
+$string['coursescreated'] = 'Mappings created: {$a}';
+$string['coursesupdated'] = 'Mappings updated: {$a}';
+$string['coursesignored'] = 'Mappings ignored: {$a}';
+$string['courseserrors'] = 'Mappings with errors: {$a}';
 
 
 

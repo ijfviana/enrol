@@ -94,7 +94,7 @@ $string['enrol_saml_supportcourses'] = 'Soportar matriculación SAML';
 $string['enrol_saml_supportcourses_description'] = 'Selecciona Interna o Externa para que Moodle a través del plugin enrol/saml automatricule al usuario (Usa Externa si tu asignación de cursos está en una base de datos externa';
 
 $string['externalmappings'] = 'Mapeos de cursos olvidados';
-$string['externalmappings_desc'] = 'Los mapeos de cursos que ya no figuren en la BD externa quedaran marcado con cursos SAML inactivos';
+$string['externalmappings_desc'] = 'Los mapeos de cursos que ya no figuren en la BD externa quedaran marcados con cursos SAML inactivos';
 
 $string['ignore_mapping'] = 'Ignorar mapeos duplicados';
 $string['import'] = 'Importar';
@@ -125,3 +125,9 @@ $string['updatemappings_desc'] = 'Actualizar los mapeos duplicados de la BD exte
 
 $string['modified'] = 'Modificado';
 $string['task_updatecoursemappings'] = 'Tarea sincronizar mapeo de cursos';
+
+$string['coursestotal'] = 'Total de mapeos: {$a}';
+$string['coursescreated'] = 'Mapeos creados: {$a}';
+$string['coursesupdated'] = 'Mapeos actualizados: {$a}';
+$string['coursesignored'] = 'Mapeos ignorados: {$a}';
+$string['courseserrors'] = 'Mapeos con errores: {$a}';

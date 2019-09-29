@@ -395,6 +395,8 @@ class enrol_saml_plugin extends enrol_plugin {
      *
      *
      * @param progress_trace $trace
+     * @param int $update 0 means exiting entries wont be updated, 1 entries get updated
+     * @param int $active 1 means that previously inserted entried that no longer exit in the ext DB will be inactive, 0 does nothing
      * @return int 0 means success, 1 db connect failure, 4 db read failure
      */
     public function update_course_mappings(progress_trace $trace, $update, $active) {
@@ -402,7 +404,7 @@ class enrol_saml_plugin extends enrol_plugin {
 
         // Make sure we sync either enrolments or courses.
         if (!$this->get_config('dbtype')) {
-            $trace->output('Course synchronisation skipped.');
+            $trace->output('Course map synchronisation skipped.');
             $trace->finished();
             return 0;
         }
@@ -449,9 +451,9 @@ class enrol_saml_plugin extends enrol_plugin {
 
                             $instance->status = 1;
                             $DB->update_record('enrol', $instance);
-                            $trace->output("course mapping, is now inactive: course id: " . $ex_mapping->course_id . " saml id: " . $ex_mapping->saml_id, 1);
-                        }else{
-                            $trace->output("course mapping, was inactive: course id: " . $ex_mapping->course_id . " saml id: " . $ex_mapping->saml_id, 1);
+                            $trace->output("course mapping, is now inactive: course id: " . $ex_mapping->course_id . " saml id: " . $ex_mapping->saml_id . ".");
+                        } else {
+                            $trace->output("course mapping, was inactive: course id: " . $ex_mapping->course_id . " saml id: " . $ex_mapping->saml_id . ".");
                         }
                     }
                 }
@@ -484,7 +486,7 @@ class enrol_saml_plugin extends enrol_plugin {
 
         foreach ($external as $key => $value) {
 
-            $trace->output($data['saml_id'] . $value->saml_id . $data['course_id'] . $value->course_id);
+            //$trace->output($data['saml_id'] . $value->saml_id . $data['course_id'] . $value->course_id);
 
             if ($data['saml_id'] == $value->saml_id && $data['course_id'] == $value->course_id) {
                 unset($external[$key]);
@@ -519,11 +521,9 @@ class enrol_saml_plugin extends enrol_plugin {
                     $data['modified'] = time();
                     $data['id'] = $mapping->id;
                     update_course_mapping($data);
-                    $trace->output("update course mapping detected: course id: " . $data['course_id'] . " saml id: " . $data['saml_id'], 1);
-                    
-                    
+                    $trace->output("Update course mapping detected: course id: " . $data['course_id'] . ", saml id: " . $data['saml_id'] . ".");
                 } else {
-                    $trace->output("can not insert new course mapping, duplicate detected: course id: " . $data['course_id'] . " saml id: " . $data['saml_id'], 1);
+                    $trace->output("Can not insert new course mapping, duplicate detected: course id: " . $data['course_id'] . ", saml id: " . $data['saml_id'] . ".");
                 }
             } else {
                 if ($DB->record_exists('course', ['shortname' => $data['course_id']])) {
@@ -532,13 +532,13 @@ class enrol_saml_plugin extends enrol_plugin {
                     $data['source'] = (int) 1;
                     //new entry in course_mapping table
                     $DB->insert_record('course_mapping', $data);
-                    $trace->output("new course mapping inserted, course id: " . $data['course_id'] . " saml id: " . $data['saml_id'], 1);
+                    $trace->output("New course mapping inserted, course id: " . $data['course_id'] . ", saml id: " . $data['saml_id'] . ".");
                 } else {
-                    $trace->output("can not insert new course mapping, can not find course_id on table {ccourse}: course id: " . $data['course_id'], 1);
+                    $trace->output("Can not insert new course mapping, can not find course_id on table {course}: course id: " . $data['course_id'] . ".");
                 }
             }
         } else {
-            $trace->output("can not insert new course mapping, course id and saml id can not be empty", 1);
+            $trace->output("Can not insert new course mapping, course id and saml id can not be empty.");
         }
         return $entry;
     }

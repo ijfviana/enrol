@@ -67,15 +67,18 @@ class course_mapping_editadvanced_form extends moodleform {
         //$mform->addHelpButton('status', 'status', 'enrol_saml');
 
         $mform->addElement('autocomplete', 'course_moodle', get_string('course_moodle', 'enrol_saml'), $c_shortname);
-        $mform->addHelpButton('course_moodle', 'course_moodle', 'enrol_saml');
         $mform->addRule('course_moodle', null, 'required');
+        $mform->addHelpButton('course_moodle', 'course_moodle', 'enrol_saml');
+        
 
 
 
         $mform->addElement('text', 'saml_id', get_string('saml_id', 'enrol_saml'), 'size="20"');
         $mform->addHelpButton('saml_id', 'saml_id', 'enrol_saml');
+        $mform->addRule('saml_id', null, 'required');
         https://docs.moodle.org/dev/lib/formslib.php_Form_Definition#Most_Commonly_Used_PARAM_.2A_Types
         $mform->setType('saml_id', PARAM_ALPHANUMEXT);
+        
         if (!empty($mappingcourse)) {
             $mform->setDefault('saml_id', $mappingcourse->saml_id);
             $mform->setDefault('course_moodle', $cont);

@@ -65,8 +65,8 @@ class task_course_mappings extends \core\task\scheduled_task {
         $enrol = enrol_get_plugin('saml');
         $config = get_config('enrol_saml');
         $trace = new \text_progress_trace();
-        $update = !empty($config->updatemappings);
-        $active = !empty($config->externalmappings);
+        $update = $config->updatemappings;
+        $active = $config->externalmappings;
 
         if ($config->supportcourses == 'external') {
             

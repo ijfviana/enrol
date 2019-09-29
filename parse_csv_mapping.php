@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -72,7 +73,7 @@ class mapping_parser {
         $ignored = 0;
         $created = 0;
         $n_errors = 0;
-        
+
         $tracker = new uploadmapping_tracker();
 
 
@@ -89,6 +90,8 @@ class mapping_parser {
 
             if ($this->prepare($data)) {
 
+                $tracker->start();
+
 
                 if ($this->exists($data) && $mapping = $DB->get_record('course_mapping', ['course_id' => $data['course_id']])) {
 
@@ -100,16 +103,15 @@ class mapping_parser {
 
                         $data['id'] = $mapping->id;
                         if (update_course_mapping($data)) {
-                            
+
                             //$result["updated"] += 1;
                             $updated++;
-                            
-                            
+
+
                             $entry = "Updated Course id " . $data['course_id'] . " SAML id " . $data['saml_id'] . " course mapping";
                             // Trigger an event for creating this field.
                             $this->events($entry, $context);
                             $tracker->output($this->linenb, true, $data);
-                            
                         } else {
                             $n_errors++;
                             $errors = "Course id " . $data['course_id'] . " can not be updated";
@@ -124,7 +126,6 @@ class mapping_parser {
                         //$result["ignored"] += 1;
                         $ignored++;
                         $tracker->output($this->linenb, true, $data);
-                        
                     }
                 } else {
 
@@ -162,12 +163,10 @@ class mapping_parser {
                 $n_errors++;
                 $tracker->output($this->linenb, false, $data);
             }
-            
-            
         }
-        
+
         $tracker->finish();
-        $tracker->results($total, $created, $updated, $n_errors);
+        $tracker->results($total, $created, $updated, $ignored, $n_errors);
 
 
         //return $result;
