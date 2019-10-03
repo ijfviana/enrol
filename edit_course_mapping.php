@@ -36,10 +36,13 @@ $mappingid = optional_param('mappingid', 0, PARAM_INT);
 
 global $DB;
 
+if (!is_siteadmin()) {
+    die('Only admins can execute this action.');
+}
 
 navigation_node::override_active_url(
         new moodle_url('/enrol/saml/course_mapping.php')
-    );
+);
 
 $PAGE->set_url('/enrol/saml/edit_course_mapping.php', ['mappingid' => $mappingid]);
 $PAGE->set_pagelayout('admin');
@@ -52,13 +55,21 @@ if (!enrol_is_enabled('saml')) {
     redirect($return);
 }
 
+/*
+  $mappingcourse = null;
+  if ($mappingid) {
+  $mappingcourse = $DB->get_record('course_mapping', ['id' => $mappingid], '*', MUST_EXIST);
+  $courses = get_courses_not_mapped($mappingcourse->id);
+  } else {
+  $courses = get_courses_not_mapped();
+  }
+ * 
+ */
 $mappingcourse = null;
 if ($mappingid) {
-    $mappingcourse = $DB->get_record('course_mapping', ['id' => $mappingid], '*', MUST_EXIST);
-    $courses = get_courses_not_mapped($mappingcourse->id);
-} else {
-    $courses = get_courses_not_mapped();
+    $mappingcourse = $DB->get_record('course_mapping', ['id' => $mappingid]);
 }
+$courses = get_all_courses_available();
 
 if (!empty($courses)) {
 

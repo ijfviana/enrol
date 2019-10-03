@@ -50,11 +50,11 @@ class course_mapping_editadvanced_form extends moodleform {
 
         $c_shortname = array_column($courses, 'shortname');
 
-        $cont=0;
+        $cont = 0;
         if (!empty($mappingcourse)) {
-            
+
             foreach ($c_shortname as $shortname) {
-                
+
                 if ($shortname == $mappingcourse->course_id) {
                     break;
                 }
@@ -69,7 +69,8 @@ class course_mapping_editadvanced_form extends moodleform {
         $mform->addElement('autocomplete', 'course_moodle', get_string('course_moodle', 'enrol_saml'), $c_shortname);
         $mform->addRule('course_moodle', null, 'required');
         $mform->addHelpButton('course_moodle', 'course_moodle', 'enrol_saml');
-        
+        $mform->setType('course_moodle', PARAM_TEXT);
+
 
 
 
@@ -78,7 +79,7 @@ class course_mapping_editadvanced_form extends moodleform {
         $mform->addRule('saml_id', null, 'required');
         https://docs.moodle.org/dev/lib/formslib.php_Form_Definition#Most_Commonly_Used_PARAM_.2A_Types
         $mform->setType('saml_id', PARAM_ALPHANUMEXT);
-        
+
         if (!empty($mappingcourse)) {
             $mform->setDefault('saml_id', $mappingcourse->saml_id);
             $mform->setDefault('course_moodle', $cont);
@@ -103,15 +104,18 @@ class course_mapping_editadvanced_form extends moodleform {
      * @return array
      */
     function validation($data, $files) {
-        global $CFG, $DB;
+        global $DB;
 
         $errors = parent::validation($data, $files);
 
         $new_mapping = (object) $data;
-        //$course_mapping    = $DB->get_record('course_mapping', array('saml_id' => $new_mapping->saml_id));
 
-        if (!$new_mapping->saml_id) {
-            $errors['course_mapping'] = get_string('nosamlid', 'enrol_saml');
+        $select = 'course_id = :course_id AND saml_id = :saml_id';
+        $params = ['course_id' => $new_mapping->course_moodle, 'saml_id' => $new_mapping->saml_id];
+
+        if ($DB->record_exists_select('course_mapping', $select, $params)) {
+
+            $errors['course_mapping'] = get_string('coursemappingexists');
         }
 
         return $errors;

@@ -75,9 +75,9 @@ $string['deletemapping'] = 'Eliminar mapeo de curso';
 $string['edit'] = "Editar mapeo de curso";
 
 
-$string['suspendmap'] = "Suspender mapeo de curso";
+$string['suspendmap'] = "Bloquear la edición del mapeo de curso";
 
-$string['unsuspendmap'] = "Habilitar mapeo de curso";
+$string['unsuspendmap'] = "Habilitar la edición del mapeo de curso";
 
 
 $string['enrol_saml_coursemapping'] = "Mapeo de Cursos";
@@ -111,8 +111,9 @@ $string['source'] = 'Fuente';
 $string['mappingfile'] = '.csv con mapeo de cursos';
 $string['mappingfile_help'] = '.csv con columnass saml_id como id curso IdP and course_id como shortname curso Moodle';
 $string['mapping_export'] = 'Exportar mapeo de cursos';
-$string['mapping_import'] = "Importas mapeo de cursos";
+$string['mapping_import'] = "Importar mapeo de cursos";
 $string['new_mapping'] = "Nuevo mapeo de curso";
+$string['nocourses'] = 'No se encontró ningún mapeo de curso Moodle';
 $string['nocoursesfound'] = 'No se encontró ningún mapeo de cursos';
 $string['nosamlid'] = 'id del curson IdP no puede ser vacío ó 0';
 
@@ -131,3 +132,12 @@ $string['coursescreated'] = 'Mapeos creados: {$a}';
 $string['coursesupdated'] = 'Mapeos actualizados: {$a}';
 $string['coursesignored'] = 'Mapeos ignorados: {$a}';
 $string['courseserrors'] = 'Mapeos con errores: {$a}';
+
+$string['muted_map'] = 'Todo mapeo cuyo curso Moodle no exista, aparece en el estilo texto silenciado';
+
+
+$string['blockmapping'] = 'Desbloquear edición mapeo de curso';
+$string['unlockcheckfullmapping'] = 'De verdad quiere desbloquear la edición para el mapeo de curso {$a}';
+
+$string['infolog'] = 'Mas información sobre estas operaciones en los Registros Moodle';
+$string['import_old_course_mappings'] = 'Importar los mapeos de cursos de la anterior version';

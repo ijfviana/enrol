@@ -24,7 +24,7 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-        <KEY NAME="mapping_moodle" TYPE="unique" FIELDS="course_id"/>
+        <KEY NAME="mapping" TYPE="unique" FIELDS="saml_id, course_id"/>
       </KEYS>
     </TABLE>
   </TABLES>

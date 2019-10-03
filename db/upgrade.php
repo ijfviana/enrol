@@ -47,5 +47,25 @@ function xmldb_enrol_saml_upgrade($oldversion) {
         // Saml savepoint reached.
         upgrade_plugin_savepoint(true, 2019092701, 'enrol', 'saml');
     }
+    
+    if ($oldversion < 2019100301) {
+
+        // Define key mapping (unique) to be added to course_mapping.
+        $table = new xmldb_table('course_mapping');
+        $key = new xmldb_key('mapping', XMLDB_KEY_UNIQUE, ['saml_id', 'course_id']);
+
+        // Launch add key mapping.
+        $dbman->add_key($table, $key);
+        
+        // Define key mapping (unique) to be dropped form course_mapping.
+        $key = new xmldb_key('unique_course', XMLDB_KEY_UNIQUE, ['course_id']);
+
+        // Launch drop key mapping.
+        $dbman->drop_key($table, $key);
+
+        // Saml savepoint reached.
+        upgrade_plugin_savepoint(true, 2019100301, 'enrol', 'saml');
+    }
+    
     return true;
 }

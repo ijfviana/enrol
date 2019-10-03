@@ -87,13 +87,14 @@ class mapping_parser {
 
             $data = $this->parse_line($line);
 
-
+            $tracker->start();
+            
             if ($this->prepare($data)) {
 
-                $tracker->start();
 
 
-                if ($this->exists($data) && $mapping = $DB->get_record('course_mapping', ['course_id' => $data['course_id']])) {
+
+                if ($this->exists($data) && $mapping = $DB->get_record('course_mapping', ['course_id' => $data['course_id'], 'saml_id' => $data['saml_id']])) {
 
                     //can not modify external source
                     if ($this->mode && !$mapping->source) {
@@ -108,19 +109,19 @@ class mapping_parser {
                             $updated++;
 
 
-                            $entry = "Updated Course id " . $data['course_id'] . " SAML id " . $data['saml_id'] . " course mapping";
+                            $entry = "Updated 'Course id' " . $data['course_id'] . ", 'SAML id' " . $data['saml_id'] . " course mapping";
                             // Trigger an event for creating this field.
                             $this->events($entry, $context);
                             $tracker->output($this->linenb, true, $data);
                         } else {
                             $n_errors++;
-                            $errors = "Course id " . $data['course_id'] . " can not be updated";
+                            $errors = "'Course id' " . $data['course_id'] .", 'SAML id' " . $data['saml_id'] ." can not be updated";
                             $this->events($errors, $context);
                             $tracker->output($this->linenb, false, $data);
                         }
                     } else {
 
-                        $entry = "Ignored Course id " . $data['course_id'] . " SAML id " . $data['saml_id'] . " course mapping";
+                        $entry = "Ignored 'Course id' " . $data['course_id'] . ", 'SAML id' " . $data['saml_id'] . " course mapping";
                         $this->events($entry, $context);
 
                         //$result["ignored"] += 1;
@@ -137,12 +138,12 @@ class mapping_parser {
                         if ($DB->insert_record('course_mapping', $data)) {
                             //$result["created"] += 1;
                             $created++;
-                            $entry = "Created Course id " . $data['course_id'] . " SAML id " . $data['saml_id'] . " course mapping";
+                            $entry = "Created 'Course id' " . $data['course_id'] . ", 'SAML id' " . $data['saml_id'] . " course mapping";
                             $this->events($entry, $context);
                             $tracker->output($this->linenb, true, $data);
                         } else {
                             $n_errors++;
-                            $errors = "Course id " . $data['course_id'] . " can not be inserted";
+                            $errors = "'Course id' " . $data['course_id'] . ", 'SAML id'". $data['saml_id'] . " can not be inserted";
                             $this->events($errors, $context);
                             $tracker->output($this->linenb, false, $data);
                         }
@@ -157,7 +158,7 @@ class mapping_parser {
                 }
             } else {
 
-                $errors = "Entry missing parameters";
+                $errors = "Entry" . "'Course id' " . $data['course_id'] . ", 'SAML id' " . $data['saml_id'] . " missing parameters";
                 $this->events($errors, $context);
                 //$result["errors"] += 1;
                 $n_errors++;
@@ -227,8 +228,8 @@ class mapping_parser {
         global $DB;
 
 
-        $select = 'course_id = :course_id';
-        $params = ['course_id' => $data['course_id']];
+        $select = 'course_id = :course_id AND saml_id = :saml_id';
+        $params = ['course_id' => $data['course_id'], 'saml_id' => $data['saml_id']];
 
         return $DB->record_exists_select('course_mapping', $select, $params);
     }

@@ -89,6 +89,8 @@ if ($mform->is_cancelled()) {
 
     //echo $OUTPUT->confirm($returnurl, get_string('confirm'));
     echo $OUTPUT->continue_button($returnurl);
+    echo html_writer::link(new moodle_url("/report/log/index.php?id=0"), get_string('infolog', 'enrol_saml'));
+
     echo $OUTPUT->footer();
     die;
 

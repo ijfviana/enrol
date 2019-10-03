@@ -24,7 +24,7 @@
 
 $string['active'] = 'SAML Status';
 $string['assignrole'] = 'Assignrole';
-$string['blocked'] = 'Blocked';
+$string['blocked'] = 'Lock edition';
 $string['blocked_help'] = 'Check wherever this entry should be modified by the admin or not';
 $string['check_mapping'] = 'Check course mappings';
 $string['course_id'] = 'Moodle Course id';
@@ -43,9 +43,9 @@ $string['deletemapping'] = 'Delete course mapping';
 $string['edit'] = "Edit course mapping";
 
 
-$string['suspendmap'] = "Suspend course mapping";
+$string['suspendmap'] = "Lock edition of course mapping";
 
-$string['unsuspendmap'] = "Unsuspend course mapping";
+$string['unsuspendmap'] = "Unlock edition of course mapping";
 
 
 $string['enrol_saml_coursemapping'] = "Course Mapping";
@@ -64,7 +64,7 @@ $string['enrol_saml_supportcourses_description'] = 'Select Internal to have Mood
 $string['externalmappings'] = 'Forgotten course mappings';
 $string['externalmappings_desc'] = 'Course mappings that are no longer entries in the DB, will change their Moodle course status to inactive enrollments';
 
-$string['ignore_mapping'] = 'Ignore duplicated mappings';
+$string['ignore_mapping'] = 'Ignore duplicate mappings';
 $string['import'] = 'Import';
 $string['importmapping'] = 'Import Course Mappings from .csv';
 $string['importmappingreview'] = 'Import Course Mappings results';
@@ -95,6 +95,7 @@ $string['mappingfile_help'] = '.csv with colums saml_id for IDP course id and co
 $string['mapping_export'] = 'Export course mappings';
 $string['mapping_import'] = "Import course mappings";
 $string['new_mapping'] = "New course mappings";
+$string['nocourses'] = 'Could not find any Moodle course';
 $string['nocoursesfound'] = 'Could not find any course mappings';
 $string['nosamlid'] = 'IDP Course id fieldcannot be empty or 0';
 $string['unenrolselfconfirm'] = 'Do you really want to unenrol yourself from course "{$a}"?';
@@ -103,8 +104,8 @@ $string['unenrolusers'] = 'Unenrol users';
 
 $string['returntosettings'] = 'Return to settings';
 
-$string['update_mapping'] = 'Update duplicated mappings';
-$string['updatemappings_desc'] = 'Update duplicated mappings from the external DB. Updated entries will appear as modified';
+$string['update_mapping'] = 'Update duplicate mappings';
+$string['updatemappings_desc'] = 'Update duplicate mappings from the external DB. Updated entries will appear as modified';
 $string['wscannotenrol'] = 'SAML plugin instance cannot enrol a user in the course id = {$a->courseid}';
 $string['wsnoinstance'] = 'SAML enrolment plugin instance doesn\'t exist or is disabled for the course (id = {$a->courseid})';
 $string['wsusercannotassign'] = 'You don\'t have the permission to assign this role ({$a->roleid}) to this user ({$a->userid}) in this course({$a->courseid}).';
@@ -127,14 +128,10 @@ $string['coursesignored'] = 'Mappings ignored: {$a}';
 $string['courseserrors'] = 'Mappings with errors: {$a}';
 
 
+$string['muted_map'] = 'All Mappings where the Moodle course does not exist appear with text-muted style';
 
+$string['blockmapping'] = 'Unlock course mapping editing';
+$string['unlockcheckfullmapping'] = 'Are you absolutely sure you want to completely unlock the course mapping {$a} editing';
 
-
-
-
-
-
-
-
-
-
+$string['infolog'] = 'More information about this operations on Moodle Logs';
+$string['import_old_course_mappings'] = 'Import course mappings from previous version';

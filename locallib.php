@@ -67,7 +67,7 @@ function get_all_course_mapping() {
 function get_all_course_mapping_custom() {
 
     global $DB;
-    $query = "SELECT  course_id, saml_id, blocked, creation, modified from {course_mapping}";
+    $query = "SELECT  id, course_id, saml_id, source, creation, modified from {course_mapping}";
     $courses = $DB->get_records_sql($query);
     return $courses;
 }
