@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -37,37 +38,31 @@ class csv_to_mapping_form extends moodleform {
 
 
         //https://docs.moodle.org/dev/Using_the_File_API_in_Moodle_forms
-        $mform->addElement('filepicker', 'userfile', get_string('file'), null, 
-                array('accepted_types' => '.csv'));
+        $mform->addElement('filepicker', 'userfile', get_string('file'), null, array('accepted_types' => '.csv'));
         $mform->addRule('userfile', null, 'required');
         $mform->addHelpButton('userfile', 'mappingfile', 'enrol_saml');
-        
-        
+
+
         $choices = csv_import_reader::get_delimiter_list();
         $mform->addElement('select', 'delimiter_name', get_string('csvdelimiter', 'tool_uploadcourse'), $choices);
-        if (array_key_exists('cfg', $choices)) {
-            $mform->setDefault('delimiter_name', 'cfg');
-        } else if (get_string('listsep', 'langconfig') == ';') {
-            $mform->setDefault('delimiter_name', 'semicolon');
-        } else {
-            $mform->setDefault('delimiter_name', 'comma');
-        }
+        $mform->setDefault('delimiter_name', 'semicolon');
+
         $mform->addHelpButton('delimiter_name', 'csvdelimiter', 'tool_uploadcourse');
 
-        
+
         $choices = core_text::get_encodings();
         $mform->addElement('select', 'encoding', get_string('encoding', 'tool_uploadcourse'), $choices);
         $mform->setDefault('encoding', 'UTF-8');
         $mform->addHelpButton('encoding', 'encoding', 'tool_uploadcourse');
-        
-        
-        $choices = [get_string('ignore_mapping','enrol_saml'),
-            get_string('update_mapping','enrol_saml')];
+
+
+        $choices = [get_string('ignore_mapping', 'enrol_saml'),
+            get_string('update_mapping', 'enrol_saml')];
         $mform->addElement('select', 'mode', get_string('mode', 'tool_uploadcourse'), $choices);
         $mform->addHelpButton('mode', 'mode', 'tool_uploadcourse');
-        
-        
-        $this->add_action_buttons(false, get_string('import','enrol_saml'));
+
+
+        $this->add_action_buttons(false, get_string('import', 'enrol_saml'));
     }
 
 }

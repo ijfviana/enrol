@@ -207,7 +207,7 @@ if ($ADMIN->fulltree) {
         $settings->add(
             new enrol_saml_admin_setting_special_link(
                 'enrol_saml/import_old_course_mappings',
-                new lang_string('new_mapping', 'enrol_saml'),
+                new lang_string('import_old_course_mappings', 'enrol_saml'),
                 $CFG->wwwroot.'/enrol/saml/import_old_course_mappings.php'
             )
         );
