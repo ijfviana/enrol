@@ -57,7 +57,7 @@ $string['created_group_info_description'] = 'Establece en este campo el texto qu
 
 $string['active'] = 'Estado SAML';
 
-$string['blocked'] = 'Suspendido';
+$string['blocked'] = 'Bloquear edición';
 $string['blocked_help'] = 'Seleccionar si esta entrada podrá ser modificado por el administrador';
 $string['check_mapping'] = 'Seleccionar mapeos de cursos';
 $string['course_id'] = 'ID Curso Moodle';

@@ -72,11 +72,11 @@ if ($confirmuser) {
     
 } else if ($delete) {              // Delete a selected course mapping, after confirmation
     $course_mapping = $DB->get_record('course_mapping', ['id' => $delete], '*', MUST_EXIST);
-    $course = $DB->get_record('course', ['shortname' => $course_mapping->course_id], '*', MUST_EXIST);
+    
 
     if ($confirm != md5($delete)) {
         echo $OUTPUT->header();
-        $name = $course->shortname;
+        $name = $course_mapping->course_id;
         echo $OUTPUT->heading(get_string('deletemapping', 'enrol_saml'));
 
         $optionsyes = array('delete' => $delete, 'confirm' => md5($delete));
@@ -95,7 +95,7 @@ if ($confirmuser) {
         } else {
 
             echo $OUTPUT->header();
-            echo $OUTPUT->notification($returnurl, get_string('deletednot', '', $course->shortname));
+            echo $OUTPUT->notification($returnurl, get_string('deletednot', '', $course_mapping->course_id));
         }
     }
 } else if ($suspend) {
