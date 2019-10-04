@@ -113,7 +113,7 @@ $string['mappingfile_help'] = '.csv con columnass saml_id como id curso IdP and 
 $string['mapping_export'] = 'Exportar mapeo de cursos';
 $string['mapping_import'] = "Importar mapeo de cursos";
 $string['new_mapping'] = "Nuevo mapeo de curso";
-$string['nocourses'] = 'No se encontró ningún mapeo de curso Moodle';
+$string['nocourses'] = 'No se encontró ningún curso Moodle';
 $string['nocoursesfound'] = 'No se encontró ningún mapeo de cursos';
 $string['nosamlid'] = 'id del curson IdP no puede ser vacío ó 0';
 

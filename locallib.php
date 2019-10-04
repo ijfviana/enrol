@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -14,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-
 /**
  * Returns all courses available in Moodle
  * 
@@ -28,6 +28,17 @@ function get_all_courses_available() {
     $courses = $DB->get_records_sql($query);
     return $courses;
 }
+
+/**
+ * Counts all courses available on Moodle
+ * 
+ * @return int number of courses on Moodle
+ */
+function course_count() {
+    global $DB;
+    return $DB->get_record_sql("SELECT COUNT(*) FROM {course} WHERE id !=" . SITEID);
+}
+
 /**
  * Returns all courses that are not already mapped for selection.
  * 
@@ -132,16 +143,16 @@ function get_some_course_mapping($limitfrom, $limitnum) {
  * @param array $params
  * @return array all records within the limits set
  */
-function course_mapping_count($extraselect='', array $params=null) {
+function course_mapping_count($extraselect = '', array $params = null) {
 
     global $DB;
-    if(!$extraselect){
+    if (!$extraselect) {
         $count = $DB->count_records('course_mapping');
-    }else{
+    } else {
 
-        $count = $DB->count_records_select('course_mapping',$extraselect,$params);
+        $count = $DB->count_records_select('course_mapping', $extraselect, $params);
     }
-    
+
     return $count;
 }
 
@@ -181,11 +192,9 @@ function get_course_map_listing($sort = 'saml_id', $dir = 'ASC', $page = 0, $rec
         if (!$select) {
             $select .= "(" . $DB->sql_like('saml_id', ':search1', false, false) .
                     " OR " . $DB->sql_like('course_id', ':search2', false, false);
-            
         } else {
             $select .= " AND (" . $DB->sql_like('saml_id', ':search1', false, false) .
                     " OR " . $DB->sql_like('course_id', ':search2', false, false);
-            
         }
         $params['search1'] = "%$search%";
         $params['search2'] = "%$search%";
@@ -206,15 +215,14 @@ function get_course_map_listing($sort = 'saml_id', $dir = 'ASC', $page = 0, $rec
     }
 
 
-    if(!$select){
+    if (!$select) {
         return $DB->get_records_sql("SELECT id, saml_id, course_id, blocked, source, creation, modified
                                    FROM {course_mapping}
                                   $sort", $params, $page, $recordsperpage);
-    }else{
+    } else {
         return $DB->get_records_sql("SELECT id, saml_id, course_id, blocked, source, creation, modified
                                    FROM {course_mapping}
                                    WHERE $select
                                   $sort", $params, $page, $recordsperpage);
     }
-    
 }

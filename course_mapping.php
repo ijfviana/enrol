@@ -72,7 +72,7 @@ if ($confirmuser) {
     
 } else if ($delete) {              // Delete a selected course mapping, after confirmation
     $course_mapping = $DB->get_record('course_mapping', ['id' => $delete], '*', MUST_EXIST);
-    
+
 
     if ($confirm != md5($delete)) {
         echo $OUTPUT->header();
@@ -326,14 +326,13 @@ if (!empty($table)) {
     echo html_writer::start_tag('div', array('class' => 'usersuspended'));
     echo html_writer::span(get_string('muted_map', 'enrol_saml'));
     echo html_writer::end_tag('div');
-
-    
 }
-if ($DB->count_records('course')) {
+
+
+if (!course_count()) {
 
     $url = new moodle_url('/enrol/saml/edit_course_mapping.php');
     echo $OUTPUT->single_button($url, get_string('new_mapping', 'enrol_saml'), 'get');
-    
 } else {
     echo html_writer::start_tag('div');
     echo html_writer::span(get_string('nocourses', 'enrol_saml'));
