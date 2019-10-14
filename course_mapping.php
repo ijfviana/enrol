@@ -75,7 +75,9 @@ if ($confirmuser) {
 
 
     if ($confirm != md5($delete)) {
+        
         echo $OUTPUT->header();
+        $id = $course_mapping->saml_id;
         $name = $course_mapping->course_id;
         echo $OUTPUT->heading(get_string('deletemapping', 'enrol_saml'));
 
@@ -85,7 +87,7 @@ if ($confirmuser) {
 
 
 
-        echo $OUTPUT->confirm(get_string('deletecheckfullmapping', 'enrol_saml', "'$name'"), $deletebutton, $returnurl);
+    echo $OUTPUT->confirm(get_string('deletecheckfullmapping1', 'enrol_saml', "'$name'")."".get_string('deletecheckfullmapping2', 'enrol_saml', "'$id'"), $deletebutton, $returnurl);
         echo $OUTPUT->footer();
         die;
     } else if (data_submitted()) {
@@ -114,13 +116,14 @@ if ($confirmuser) {
     if ($confirm != md5($unsuspend)) {
         echo $OUTPUT->header();
         echo $OUTPUT->heading(get_string('blockmapping', 'enrol_saml'));
+        $id = $course_mapping->saml_id;
         $name = $course_mapping->course_id;
 
         $optionsyes = array('unsuspend' => $unsuspend, 'confirm' => md5($unsuspend));
         $deleteurl = new moodle_url($returnurl, $optionsyes);
         $deletebutton = new single_button($deleteurl, get_string('edit'), 'post');
 
-        echo $OUTPUT->confirm(get_string('unlockcheckfullmapping', 'enrol_saml', "'$name'"), $deletebutton, $returnurl);
+        echo $OUTPUT->confirm(get_string('unlockcheckfullmapping1', 'enrol_saml', "'$name'")."".get_string('unlockcheckfullmapping2', 'enrol_saml', "'$id'"), $deletebutton, $returnurl);
         echo $OUTPUT->footer();
         die;
     } else if (data_submitted()) {

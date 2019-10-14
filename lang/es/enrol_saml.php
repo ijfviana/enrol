@@ -68,7 +68,8 @@ $string['course_moodle_help'] = 'Seleccionar el nombre corto del curso Moodle qu
 $string['creation'] = 'Creación';
 $string['csv_to_course_mapping'] = 'Importar CSV a Mapeo de Curso';
 
-$string['deletecheckfullmapping'] = 'De verdad quiere eliminar el mapeo de cursos {$a}';
+$string['deletecheckfullmapping1'] = 'De verdad quiere eliminar el mapeo de curso con curso Moodle: {$a}';
+$string['deletecheckfullmapping2'] = ' y curso IdP: {$a}';
 $string['deletemapping'] = 'Eliminar mapeo de curso';
 
 

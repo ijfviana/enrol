@@ -36,7 +36,8 @@ $string['creation'] = 'Created';
 $string['csv_to_course_mapping'] = 'Import CSV to Course Map';
 $string['defaultperiod'] = 'Default enrolment period';
 $string['defaultperiod_desc'] = 'Default length of the default enrolment period setting (in seconds).';
-$string['deletecheckfullmapping'] = 'Are you absolutely sure you want to completely delete the course mapping {$a}';
+$string['deletecheckfullmapping1'] = 'Are you absolutely sure you want to completely delete the course mapping with  Moodle course: {$a}';
+$string['deletecheckfullmapping2'] = ' and IdP course: {$a}';
 $string['deletemapping'] = 'Delete course mapping';
 
 
@@ -131,7 +132,8 @@ $string['courseserrors'] = 'Mappings with errors: {$a}';
 $string['muted_map'] = 'All Mappings where the Moodle course does not exist appear with text-muted style';
 
 $string['blockmapping'] = 'Unlock course mapping editing';
-$string['unlockcheckfullmapping'] = 'Are you absolutely sure you want to completely unlock the course mapping {$a} editing';
+$string['unlockcheckfullmapping1'] = 'Are you absolutely sure you want to completely unlock the course mapping with Moodle course: {$a}';
+$string['unlockcheckfullmapping2'] = ' and IdP course: {$a} editing';
 
 $string['infolog'] = 'More information about this operations on Moodle Logs';
 $string['import_old_course_mappings'] = 'Import course mappings from previous version';
