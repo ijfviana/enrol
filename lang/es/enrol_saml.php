@@ -27,13 +27,13 @@ $string['defaultperiod'] = 'Periodo por defecto';
 $string['defaultperiod_desc'] = 'Longitud del periodo por defecto (en segundos).';
 $string['enrolledincourserole'] = 'Matriculado en "{$a->course}" como "{$a->role}"';
 $string['enrolusers'] = 'Matricular usuarios';
-$string['saml:config'] = 'Congigurar las instancias de matriculación saml';
+$string['saml:config'] = 'Configurar las instancias de matriculación saml';
 $string['saml:enrol'] = 'Matricular usuarios';
 $string['saml:manage'] = 'Gestionar la matriculación de usuarios';
 $string['saml:unenrol'] = 'Desmatricular usuario del curso';
 $string['saml:unenrolself'] = 'Auto-desmatricularse del curso';
 $string['pluginname'] = 'Matriculación SAML';
-$string['pluginname_desc'] = 'El plugin de matriculación SAML permite a los usuarios automatricularse en cursos cuando se loguean usando el plugin auth/saml basandose en la información propodercionada por el Proveedor de Identidad. (asegurate de definir el mapeo de los cursos y de los roles en la configuración del plugin auth/saml';
+$string['pluginname_desc'] = 'El plugin de matriculación SAML permite a los usuarios automatricularse en cursos cuando se loguean usando el plugin auth/saml basándose en la información proporcionada por el Proveedor de Identidad. (asegurate de definir el mapeo de los cursos y de los roles en la configuración del plugin auth/saml';
 $string['status'] = 'Habilitar matriculación SAML';
 $string['status_desc'] = 'Permitir acceder al curso a los usuarios internamente matriculados.Debería estar habilitado casi siempre.';
 $string['status_help'] = 'Esta configuración determina la forma en que los usuarios serán matriculados vía SAML.';
@@ -116,7 +116,7 @@ $string['mapping_import'] = "Importar mapeo de cursos";
 $string['new_mapping'] = "Nuevo mapeo de curso";
 $string['nocourses'] = 'No se encontró ningún curso Moodle';
 $string['nocoursesfound'] = 'No se encontró ningún mapeo de cursos';
-$string['nosamlid'] = 'id del curson IdP no puede ser vacío ó 0';
+$string['nosamlid'] = 'id del curso IdP no puede ser vacío o 0';
 
 
 $string['returntosettings'] = 'Volver a Configuración';
@@ -138,7 +138,7 @@ $string['muted_map'] = 'Todo mapeo cuyo curso Moodle no exista, aparece en el es
 
 
 $string['blockmapping'] = 'Desbloquear edición mapeo de curso';
-$string['unlockcheckfullmapping'] = 'De verdad quiere desbloquear la edición para el mapeo de curso {$a}';
+$string['unlockcheckfullmapping'] = '¿Realmente desea desbloquear la edición para el mapeo de curso {$a}?';
 
 $string['infolog'] = 'Mas información sobre estas operaciones en los Registros Moodle';
-$string['import_old_course_mappings'] = 'Importar los mapeos de cursos de la anterior version';
+$string['import_old_course_mappings'] = 'Importar los mapeos de cursos de la version anterior del módulo';
