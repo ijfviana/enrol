@@ -303,7 +303,6 @@ if (!empty($table)) {
 
 
 if (course_count()) {
-
     $url = new moodle_url('/enrol/saml/edit_course_mapping.php');
     echo $OUTPUT->single_button($url, get_string('new_mapping', 'enrol_saml'), 'get');
 } else {
@@ -313,4 +312,3 @@ if (course_count()) {
 }
 
 echo $OUTPUT->footer();
-
