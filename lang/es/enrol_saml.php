@@ -64,7 +64,13 @@ $string['course_id'] = 'ID Curso Moodle';
 
 $string['course_map'] = 'Mapeo de Cursos';
 $string['course_moodle'] = 'Nombre corto del Curso Moodle';
-$string['course_moodle_help'] = 'Seleccionar el nombre corto del curso Moodle que quiere mapear';
+$string['course_moodle_help'] = 'Seleccione el nombre corto del curso al que asignará los grupos de actividad';
+$string['saml_course_period'] = 'Curso académico';
+$string['saml_course_period_help'] = 'Seleccione el curso académico para el que la asignación será efectiva';
+
+$string['saml_course_id'] = 'Grupo de actividad';
+$string['saml_course_id_help'] = 'Introduzca el grupo de actividad que será asignado al curso';
+
 $string['creation'] = 'Creación';
 $string['csv_to_course_mapping'] = 'Importar CSV a Mapeo de Curso';
 
@@ -84,6 +90,7 @@ $string['unsuspendmap'] = "Habilitar la edición del mapeo de curso";
 $string['enrol_saml_coursemapping'] = "Mapeo de Cursos";
 $string['enrol_saml_coursemapping_head'] = "El IdP puede usar su propio shortname para este curso. Introduzca en esta sección el mapeo entre el IdP y el curso Moodle. Acepta valores separados por comas.";
 
+$string['lms_course_id'] = 'Nombre corto del curso';
 $string['enrol_saml_courses'] = 'SAML course mapping';
 $string['enrol_saml_courses_description'] = 'Atributo SAML que contiene los datos de los cursos (por defecto es schacUserStatus)';
 $string['enrol_saml_courses_not_found'] = "El IdP ha devuelto un conjunto de datos que no contiene el campo donde Moodle espera encontrar los cursos ({\$a}). Este campo es obligatorio para automatricular al usuario.";
