@@ -78,13 +78,8 @@ class mapping_import {
 
         if ($course_map = $this->get_old_course_mapping()) {
 
-
-
             // Loop over the CSV lines.
             foreach ($course_map as $map) {
-
-
-                
 
                 $mappings = $this->explode_mapping($map);
 
@@ -93,21 +88,15 @@ class mapping_import {
                 $cont = 0;
 
                 foreach ($mappings as $new_map) {
-                    
                     $tracker->start();
-                    
                     $this->linenb++;
                     $total++;
 
-
                     if ($this->prepare($new_map)) {
-
-
                         if ($this->exists($new_map)) {
 
-                            $entry = "Ignored Course id " . $new_map->course_id . ", SAML id " . $new_map->saml_id . " course mapping";
+                            $entry = "Ignored Course id " . $new_map->lms_course_id . ", SAML id " . $new_map->saml_course_id . " course mapping";
                             $this->events($entry, $context);
-
                             $ignored++;
                             $tracker->output($this->linenb, true, $new_map);
                         } else {
@@ -119,12 +108,12 @@ class mapping_import {
                             if ($DB->insert_record('course_mapping', $new_map)) {
                                 
                                 $created++;
-                                $entry = "Created 'Course id' " . $new_map->course_id . ", 'SAML id' " . $new_map->saml_id . " course mapping";
+                                $entry = "Created 'Course id' " . $new_map->lms_course_id . ", 'SAML id' " . $new_map->saml_course_id . " course mapping";
                                 $this->events($entry, $context);
                                 $tracker->output($this->linenb, true, $new_map);
                             } else {
                                 $n_errors++;
-                                $errors = "Course id " . $new_map->course_id . ", 'SAML id' " . $new_map->saml_id . " can not be inserted";
+                                $errors = "Course id " . $new_map->lms_course_id . ", 'SAML id' " . $new_map->saml_course_id . " can not be inserted";
                                 $this->events($errors, $context);
                                 $tracker->output($this->linenb, false, $new_map);
                             }
@@ -132,7 +121,7 @@ class mapping_import {
                         $cont++;
                     } else {
 
-                        $errors = "Entry missing parameters 'Course id' " . $new_map->course_id . ", 'SAML id' " . $new_map->saml_id;
+                        $errors = "Entry missing parameters 'Course id' " . $new_map->lms_course_id . ", 'SAML id' " . $new_map->saml_course_id;
                         $this->events($errors, $context);
                         $n_errors++;
                         $tracker->output($this->linenb, false, $new_map);
@@ -143,7 +132,7 @@ class mapping_import {
 
                     if (!$DB->delete_records('config_plugins', ['id' => $map->id])) {
                         $n_errors++;
-                        $errors = "Course id " . $new_map->course_id . ", 'SAML id' " . $new_map->saml_id . " can not be deleted";
+                        $errors = "Course id " . $new_map->lms_course_id . ", 'SAML id' " . $new_map->saml_course_id . " can not be deleted";
                         $this->events($errors, $context);
                         $tracker->output($this->linenb, false, $new_map);
                     }
@@ -168,8 +157,8 @@ class mapping_import {
         foreach ($explode_map as $saml_id) {
 
             $new_map = new stdClass();
-            $new_map->course_id = str_replace('course_mapping_', '', $map->name);
-            $new_map->saml_id = $saml_id;
+            $new_map->lms_course_id = strtoupper(str_replace('_','-',str_replace('course_mapping_', '', $map->name)));
+            $new_map->saml_course_id = $saml_id;
             $mappings[] = $new_map;
         }
         return $mappings;
@@ -194,9 +183,8 @@ class mapping_import {
     protected function exists($new_map) {
         global $DB;
 
-
-        $select = 'course_id = :course_id AND saml_id = :saml_id';
-        $params = ['course_id' => $new_map->course_id, 'saml_id' => $new_map->saml_id];
+        $select = 'lms_course_id = :course_id AND saml_course_id = :saml_id';
+        $params = ['course_id' => $new_map->lms_course_id, 'saml_id' => $new_map->saml_course_id];
 
         return $DB->record_exists_select('course_mapping', $select, $params);
     }
@@ -213,9 +201,8 @@ class mapping_import {
         $site = $DB->get_record('course', ['id' => SITEID]);
 
         // Validate the shortname.
-        if (!empty($new_map->saml_id) && !empty($new_map->course_id) && $new_map->course_id != $site->shortname) {
-            if ($new_map->course_id !== clean_param($new_map->course_id, PARAM_TEXT) && $new_map->saml_id !== clean_param($new_map->saml_id, PARAM_ALPHAEXT)) {
-
+        if (!empty($new_map->saml_course_id) && !empty($new_map->lms_course_id) && $new_map->lms_course_id != $site->shortname) {
+            if ($new_map->lms_course_id !== clean_param($new_map->lms_course_id, PARAM_TEXT) && $new_map->saml_course_id !== clean_param($new_map->saml_course_id, PARAM_ALPHAEXT)) {
                 $res = false;
             }
         } else {

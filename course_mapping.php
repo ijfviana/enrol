@@ -33,7 +33,7 @@ require_once($CFG->libdir . '/adminlib.php');
 $delete = optional_param('delete', 0, PARAM_INT);
 $confirm = optional_param('confirm', '', PARAM_ALPHANUM);   //md5 confirmation hash
 $confirmuser = optional_param('confirmuser', 0, PARAM_INT);
-$sort = optional_param('sort', 'saml_id', PARAM_ALPHAEXT);
+$sort = optional_param('sort', 'saml_course_id', PARAM_ALPHAEXT);
 $dir = optional_param('dir', 'ASC', PARAM_ALPHA);
 $page = optional_param('page', 0, PARAM_INT);
 $perpage = optional_param('perpage', 10, PARAM_INT);        // how many per page
@@ -65,7 +65,6 @@ $strunsuspend = get_string('unsuspendmap', 'enrol_saml');
 
 $returnurl = new moodle_url('/enrol/saml/course_mapping.php', array('sort' => $sort, 'dir' => $dir, 'perpage' => $perpage, 'page' => $page));
 
-
 $course = null;
 
 if ($confirmuser) {
@@ -73,38 +72,33 @@ if ($confirmuser) {
 } else if ($delete) {              // Delete a selected course mapping, after confirmation
     $course_mapping = $DB->get_record('course_mapping', ['id' => $delete], '*', MUST_EXIST);
 
-
     if ($confirm != md5($delete)) {
         
         echo $OUTPUT->header();
-        $id = $course_mapping->saml_id;
-        $name = $course_mapping->course_id;
+        $id = $course_mapping->saml_course_id;
+        $name = $course_mapping->lms_course_id;
         echo $OUTPUT->heading(get_string('deletemapping', 'enrol_saml'));
 
         $optionsyes = array('delete' => $delete, 'confirm' => md5($delete));
         $deleteurl = new moodle_url($returnurl, $optionsyes);
         $deletebutton = new single_button($deleteurl, get_string('delete'), 'post');
 
-
-
-    echo $OUTPUT->confirm(get_string('deletecheckfullmapping1', 'enrol_saml', "'$name'")."".get_string('deletecheckfullmapping2', 'enrol_saml', "'$id'"), $deletebutton, $returnurl);
+        echo $OUTPUT->confirm(get_string('deletecheckfullmapping1', 'enrol_saml', "'$name'")."".get_string('deletecheckfullmapping2', 'enrol_saml', "'$id'"), $deletebutton, $returnurl);
         echo $OUTPUT->footer();
         die;
     } else if (data_submitted()) {
         if (delete_course_mapping($course_mapping)) {
-
             redirect($returnurl);
         } else {
 
             echo $OUTPUT->header();
-            echo $OUTPUT->notification($returnurl, get_string('deletednot', '', $course_mapping->course_id));
+            echo $OUTPUT->notification($returnurl, get_string('deletednot', '', $course_mapping->lms_course_id));
         }
     }
 } else if ($suspend) {
     if ($course = $DB->get_record('course_mapping', ['id' => $suspend])) {
         if ($course->blocked != 1) {
             $course->blocked = 1;
-
             update_course_mapping($course);
         }
     }
@@ -116,8 +110,8 @@ if ($confirmuser) {
     if ($confirm != md5($unsuspend)) {
         echo $OUTPUT->header();
         echo $OUTPUT->heading(get_string('blockmapping', 'enrol_saml'));
-        $id = $course_mapping->saml_id;
-        $name = $course_mapping->course_id;
+        $id = $course_mapping->saml_course_id;
+        $name = $course_mapping->lms_course_id;
 
         $optionsyes = array('unsuspend' => $unsuspend, 'confirm' => md5($unsuspend));
         $deleteurl = new moodle_url($returnurl, $optionsyes);
@@ -135,13 +129,11 @@ if ($confirmuser) {
             } else {
 
                 echo $OUTPUT->header();
-                echo $OUTPUT->notification($returnurl, get_string('deletednot', '', $course_mapping->course_id));
+                echo $OUTPUT->notification($returnurl, get_string('deletednot', '', $course_mapping->lms_course_id));
             }
         }
     }
 }
-
-
 
 echo $OUTPUT->header();
 
@@ -149,7 +141,7 @@ echo $OUTPUT->header();
 $filter = new mapping_filtering();
 $context = context_system::instance();
 
-$columns = ['saml_id', 'course_id', 'source', 'creation', 'modified'];
+$columns = ['saml_course_id', 'lms_course_id', 'source', 'creation', 'modified'];
 
 foreach ($columns as $column) {
     $string[$column] = get_map_field_name($column);
@@ -170,11 +162,8 @@ foreach ($columns as $column) {
 list($extrasql, $params) = $filter->get_sql_filter();
 $courses = get_course_map_listing($sort, $dir, $page * $perpage, $perpage, '', $extrasql, $params);
 
-
 $coursescount = course_mapping_count();
 $coursesearchcount = course_mapping_count($extrasql, $params);
-
-
 
 if ($extrasql !== '') {
     echo $OUTPUT->heading("$coursesearchcount / $coursescount " . get_string('course_map', 'enrol_saml'));
@@ -201,37 +190,24 @@ if (!$courses) {
     $table->head = array();
     $table->colclasses = array();
 
-
-    $table->head[] = $saml_id;
-
-
-    $table->head[] = $course_id;
-
+    $table->head[] = $saml_course_id;
+    $table->head[] = $lms_course_id;
     $table->head[] = get_string('active', 'enrol_saml');
-
     $table->head[] = $source;
-
     $table->head[] = $creation;
-
     $table->head[] = $modified;
-
     $table->head[] = get_string('edit');
     $table->colclasses[] = 'centeralign';
 
-
     $table->id = "courses";
-
-
-
-
 
     foreach ($courses as $course) {
 
         $buttons = [];
 
         // suspend button
-        if (has_capability('enrol/saml:config', $sitecontext) && !$course->source) {
-            if ($course->blocked) {
+        if (has_capability('enrol/saml:config', $sitecontext)) {
+            if ($course->blocked && !$course->source) {
                 $url = new moodle_url($returnurl, array('unsuspend' => $course->id));
                 $buttons[] = html_writer::link($url, $OUTPUT->pix_icon('t/unlock', $strunsuspend));
             } else {
@@ -241,20 +217,17 @@ if (!$courses) {
 
                 // edit button
 
-                $url = new moodle_url('/enrol/saml/edit_course_mapping.php', array('mappingid' => $course->id));
-                $buttons[] = html_writer::link($url, $OUTPUT->pix_icon('t/edit', $stredit));
-
+                if (!$course->source)
+                {
+                    $url = new moodle_url('/enrol/saml/edit_course_mapping.php', array('mappingid' => $course->id));
+                    $buttons[] = html_writer::link($url, $OUTPUT->pix_icon('t/edit', $stredit));
+                }
                 // delete button
-
 
                 $url = new moodle_url($returnurl, array('delete' => $course->id));
                 $buttons[] = html_writer::link($url, $OUTPUT->pix_icon('t/delete', $strdelete));
             }
         }
-
-
-
-
 
         if (!$course->source) {
             $fuente = get_string('source_internal', 'enrol_saml');
@@ -263,15 +236,15 @@ if (!$courses) {
         }
 
         $row = [];
-        if ($course_link = $DB->get_record('course', ['shortname' => $course->course_id])) {
+        if ($course_link = $DB->get_record('course', ['shortname' => $course->lms_course_id])) {
             if (get_saml_enrol_status($course)) {
                 $status = get_string('active');
             } else {
                 $status = get_string('inactive');
             }
 
-            $row[] = $course->saml_id;
-            $row[] = "<a href=\"$CFG->wwwroot/course/view.php?id=$course_link->id\">$course->course_id</a>";
+            $row[] = $course->saml_course_id;
+            $row[] = "<a href=\"$CFG->wwwroot/course/view.php?id=$course_link->id\">$course->lms_course_id</a>";
             $row[] = "<a href=\"$CFG->wwwroot/enrol/saml/edit.php?courseid=$course_link->id\">$status</a>";
             $row[] = $fuente;
             $row[] = date("Y-m-d", $course->creation);
@@ -283,8 +256,8 @@ if (!$courses) {
             }
         } else {
 
-            $row[] = $course->saml_id;
-            $row[] = $course->course_id;
+            $row[] = $course->saml_course_id;
+            $row[] = $course->lms_course_id;
 
             $status = get_string('inactive');
             $row[] = $status;
@@ -314,9 +287,6 @@ echo '</p>';
 echo html_writer::link(new moodle_url("/admin/settings.php?section=enrolsettingssaml"), get_string('returntosettings', 'enrol_saml'));
 echo '</p>';
 
-
-
-
 // add filters
 $filter->display_add();
 $filter->display_active();
@@ -342,8 +312,5 @@ if (course_count()) {
     echo html_writer::end_tag('div');
 }
 
-
-
 echo $OUTPUT->footer();
-
 

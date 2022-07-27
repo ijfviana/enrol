@@ -50,10 +50,10 @@ function get_courses_not_mapped($mapid = null) {
     global $DB;
     if (!empty($mapid)) { // Can edit course mapping with this id
         $query = "SELECT id, idnumber, shortname from {course} as c WHERE NOT EXISTS( 
-    SELECT * FROM {course_mapping} as m WHERE c.shortname = m.course_id and m.id != '" . $mapid . "') AND c.id !=" . SITEID;
+    SELECT * FROM {course_mapping} as m WHERE c.shortname = m.lms_course_id and m.id != '" . $mapid . "') AND c.id !=" . SITEID;
     } else { // New course mapping
         $query = "SELECT id, idnumber, shortname from {course} as c WHERE NOT EXISTS( 
-    SELECT * FROM {course_mapping} as m WHERE c.shortname = m.course_id) AND c.id !=" . SITEID;
+    SELECT * FROM {course_mapping} as m WHERE c.shortname = m.lms_course_id) AND c.id !=" . SITEID;
     }
 
     $courses = $DB->get_records_sql($query);
@@ -78,7 +78,7 @@ function get_all_course_mapping() {
 function get_all_course_mapping_custom() {
 
     global $DB;
-    $query = "SELECT  id, course_id, saml_id, source, creation, modified from {course_mapping}";
+    $query = "SELECT  id, lms_course_id, saml_course_id, source, creation, modified from {course_mapping}";
     $courses = $DB->get_records_sql($query);
     return $courses;
 }
@@ -114,12 +114,12 @@ function get_saml_enrol_status($course_map) {
 
     global $DB;
 
-    $getcourse = $DB->get_record('course', ['shortname' => $course_map->course_id]);
+    $getcourse = $DB->get_record('course', ['shortname' => $course_map->lms_course_id]);
 
-    $select = 'courseid = :course_id AND enrol = :enrol AND status = :status';
+    $select = 'courseid = :lms_course_id AND enrol = :enrol AND status = :status';
     // status = 0, means enrol instance is active. table {enrol}
     $saml = 'saml';
-    $params = ['course_id' => $getcourse->id, 'enrol' => $saml, 'status' => 0];
+    $params = ['lms_course_id' => $getcourse->id, 'enrol' => $saml, 'status' => 0];
 
     return $DB->record_exists_select('enrol', $select, $params);
 }
@@ -180,7 +180,7 @@ function get_map_field_name($field) {
  *   as appropriate for current user and given context
  * @return array Array of course_mapping records
  */
-function get_course_map_listing($sort = 'saml_id', $dir = 'ASC', $page = 0, $recordsperpage = 0, $search = '', $extraselect = '', array $extraparams = null) {
+function get_course_map_listing($sort = 'saml_course_id', $dir = 'ASC', $page = 0, $recordsperpage = 0, $search = '', $extraselect = '', array $extraparams = null) {
 
     global $DB, $CFG;
 
@@ -190,11 +190,11 @@ function get_course_map_listing($sort = 'saml_id', $dir = 'ASC', $page = 0, $rec
     if (!empty($search)) {
         $search = trim($search);
         if (!$select) {
-            $select .= "(" . $DB->sql_like('saml_id', ':search1', false, false) .
-                    " OR " . $DB->sql_like('course_id', ':search2', false, false);
+            $select .= "(" . $DB->sql_like('saml_course_id', ':search1', false, false) .
+                    " OR " . $DB->sql_like('lms_course_id', ':search2', false, false);
         } else {
-            $select .= " AND (" . $DB->sql_like('saml_id', ':search1', false, false) .
-                    " OR " . $DB->sql_like('course_id', ':search2', false, false);
+            $select .= " AND (" . $DB->sql_like('saml_course_id', ':search1', false, false) .
+                    " OR " . $DB->sql_like('lms_course_id', ':search2', false, false);
         }
         $params['search1'] = "%$search%";
         $params['search2'] = "%$search%";
@@ -216,11 +216,11 @@ function get_course_map_listing($sort = 'saml_id', $dir = 'ASC', $page = 0, $rec
 
 
     if (!$select) {
-        return $DB->get_records_sql("SELECT id, saml_id, course_id, blocked, source, creation, modified
+        return $DB->get_records_sql("SELECT id, saml_course_id, lms_course_id, blocked, source, creation, modified
                                    FROM {course_mapping}
                                   $sort", $params, $page, $recordsperpage);
     } else {
-        return $DB->get_records_sql("SELECT id, saml_id, course_id, blocked, source, creation, modified
+        return $DB->get_records_sql("SELECT id, saml_course_id, lms_course_id, blocked, source, creation, modified
                                    FROM {course_mapping}
                                    WHERE $select
                                   $sort", $params, $page, $recordsperpage);

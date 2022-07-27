@@ -27,7 +27,7 @@ $string['assignrole'] = 'Assignrole';
 $string['blocked'] = 'Lock edition';
 $string['blocked_help'] = 'Check wherever this entry should be modified by the admin or not';
 $string['check_mapping'] = 'Check course mappings';
-$string['course_id'] = 'Moodle Course id';
+$string['lms_course_id'] = 'Moodle Course id';
 
 $string['course_map'] = 'Course Mappings';
 $string['course_moodle'] = 'Moodle course shortname';
@@ -81,8 +81,8 @@ $string['source_external'] = 'External';
 $string['source_internal'] = 'Internal';
 $string['pluginname'] = 'SAML enrolments';
 $string['pluginname_desc'] = 'The saml enrolments plugin allows users to be auto-enrolled in courses when login using the auth/saml plugin based on the data provided by the Identity Provider. (be sure you provide the course mapping and the role mapping on the settings of the auth/saml plugin';
-$string['saml_id'] = 'IDP Course id';
-$string['saml_id_help'] = 'Enter the id of the course on the IDP that corresponds with the course in Moodle';
+$string['saml_course_id'] = 'IDP Course id';
+$string['saml_course_id_help'] = 'Enter the id of the course on the IDP that corresponds with the course in Moodle';
 $string['source'] = 'Source';
 $string['status'] = 'Enable saml enrolments';
 $string['status_desc'] = 'Allow course access of internally enrolled users. This should be kept enabled in most cases.';
@@ -92,7 +92,7 @@ $string['statusdisabled'] = 'Disabled';
 $string['logfile'] = 'Log file';
 $string['logfile_description'] = 'If file defined, enrollment info of courses and groups will be stored. (Use an absolute path or Moodle will save this file in the moodledata folder).';
 $string['mappingfile'] = '.csv with course mappings';
-$string['mappingfile_help'] = '.csv with colums saml_id for IDP course id and course_id for Moodle course id';
+$string['mappingfile_help'] = '.csv with colums saml_course_id for IDP course id and lms_course_id for Moodle course id';
 $string['mapping_export'] = 'Export course mappings';
 $string['mapping_import'] = "Import course mappings";
 $string['new_mapping'] = "New course mappings";
@@ -120,7 +120,8 @@ $string['created_group_info_description'] = 'Set in this field the text that wil
 $string['modified'] = 'Modified';
 $string['task_updatecoursemappings'] = 'Synchronise course mappings task';
 
-
+$string['saml_course_period'] = 'Academic year';
+$string['saml_course_period_help'] = 'Select the academic year for which the assignment will be effective.';
 
 $string['coursestotal'] = 'Total mappings: {$a}';
 $string['coursescreated'] = 'Mappings created: {$a}';

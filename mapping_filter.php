@@ -58,7 +58,7 @@ class mapping_filtering {
 
 
 
-        $fieldnames = ['saml_id' => 1, 'course_id' => 0, 'blocked' => 1, 'creation' => 1, 'modified' => 1];
+        $fieldnames = ['saml_course_id' => 1, 'lms_course_id' => 0, 'blocked' => 1, 'creation' => 1, 'modified' => 1];
 
         $this->_fields = array();
 
@@ -122,8 +122,8 @@ class mapping_filtering {
         global $USER, $CFG, $DB, $SITE;
 
         switch ($fieldname) {
-            case 'saml_id': return new user_filter_text('saml_id', get_string('saml_id', 'enrol_saml'), $advanced, 'saml_id');
-            case 'course_id': return new user_filter_text('course_id', get_string('course_id', 'enrol_saml'), $advanced, 'course_id');
+            case 'saml_course_id': return new user_filter_text('saml_course_id', get_string('saml_course_id', 'enrol_saml'), $advanced, 'saml_course_id');
+            case 'lms_course_id': return new user_filter_text('lms_course_id', get_string('lms_course_id', 'enrol_saml'), $advanced, 'lms_course_id');
             case 'active': return new user_filter_yesno('active', get_string('active', 'enrol_saml'), $advanced, 'active');
             case 'blocked': return new user_filter_yesno('blocked', get_string('blocked', 'enrol_saml'), $advanced, 'blocked');
             case 'creation': return new user_filter_date('creation', get_string('creation', 'enrol_saml'), $advanced, 'creation');

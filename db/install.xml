@@ -15,8 +15,9 @@
     <TABLE NAME="course_mapping" COMMENT="course_mapping table. For mapping IDP courses with Moodle courses">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="18" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="saml_id" TYPE="char" LENGTH="55" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="course_id" TYPE="char" LENGTH="55" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="saml_course_id" TYPE="char" LENGTH="55" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="lms_course_id" TYPE="char" LENGTH="55" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="saml_course_period" TYPE="char" LENGTH="55" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="blocked" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="source" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="creation" TYPE="char" LENGTH="20" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
@@ -24,7 +25,7 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-        <KEY NAME="mapping" TYPE="unique" FIELDS="saml_id, course_id"/>
+        <KEY NAME="mapping" TYPE="unique" FIELDS="saml_course_id, lms_course_id"/>
       </KEYS>
     </TABLE>
   </TABLES>

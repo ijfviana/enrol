@@ -28,16 +28,16 @@ function xmldb_enrol_saml_upgrade($oldversion) {
         // Define field id to be added to course_mapping.
         $table = new xmldb_table('course_mapping');
         $table->add_field('id', XMLDB_TYPE_INTEGER, '18', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null, null);
-        $table->add_field('saml_id', XMLDB_TYPE_CHAR, '55', null, XMLDB_NOTNULL, null, '0', 'id');
-        $table->add_field('course_id', XMLDB_TYPE_CHAR, '55', null, XMLDB_NOTNULL, null, '0', 'saml_id');
-        $table->add_field('blocked', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'course_id');
+        $table->add_field('saml_course_id', XMLDB_TYPE_CHAR, '55', null, XMLDB_NOTNULL, null, '0', 'id');
+        $table->add_field('lms_course_id', XMLDB_TYPE_CHAR, '55', null, XMLDB_NOTNULL, null, '0', 'saml_course_id');
+        $table->add_field('saml_course_period', XMLDB_TYPE_CHAR, '55', null, XMLDB_NOTNULL, null, '0', 'lms_course_id');
+        $table->add_field('blocked', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'saml_course_period');
         $table->add_field('source', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'blocked');
         $table->add_field('creation', XMLDB_TYPE_CHAR, '20', null, XMLDB_NOTNULL, null, '0', 'source');
         $table->add_field('modified', XMLDB_TYPE_CHAR, '20', null, null, null, null, 'creation');
 
         $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
-        $table->add_key('unique_course', XMLDB_KEY_UNIQUE, ['course_id']);
-
+        $table->add_key('unique_course', XMLDB_KEY_UNIQUE, ['saml_course_id']);
 
         // Conditionally launch create table for message_popup.
         if (!$dbman->table_exists($table)) {
@@ -52,13 +52,13 @@ function xmldb_enrol_saml_upgrade($oldversion) {
 
         // Define key mapping (unique) to be added to course_mapping.
         $table = new xmldb_table('course_mapping');
-        $key = new xmldb_key('mapping', XMLDB_KEY_UNIQUE, ['saml_id', 'course_id']);
+        $key = new xmldb_key('mapping', XMLDB_KEY_UNIQUE, ['saml_course_id', 'lms_course_id']);
 
         // Launch add key mapping.
         $dbman->add_key($table, $key);
         
         // Define key mapping (unique) to be dropped form course_mapping.
-        $key = new xmldb_key('unique_course', XMLDB_KEY_UNIQUE, ['course_id']);
+        $key = new xmldb_key('unique_course', XMLDB_KEY_UNIQUE, ['saml_course_id']);
 
         // Launch drop key mapping.
         $dbman->drop_key($table, $key);

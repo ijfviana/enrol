@@ -46,8 +46,6 @@ class course_mapping_editadvanced_form extends moodleform {
         $courses = $this->_customdata['courses'];
         $mappingcourse = $this->_customdata['mappingcourse'];
 
-
-
         $c_shortname = array_column($courses, 'shortname');
 
         $cont = 0;
@@ -55,37 +53,33 @@ class course_mapping_editadvanced_form extends moodleform {
 
             foreach ($c_shortname as $shortname) {
 
-                if ($shortname == $mappingcourse->course_id) {
+                if ($shortname == $mappingcourse->lms_course_id) {
                     break;
                 }
                 $cont++;
             }
         }
 
-
-        //$mform->addElement('select', 'course_moodle', get_string('course_moodle', 'enrol_saml'), $c_shortname);
-        //$mform->addHelpButton('status', 'status', 'enrol_saml');
-
         $mform->addElement('autocomplete', 'course_moodle', get_string('course_moodle', 'enrol_saml'), $c_shortname);
         $mform->addRule('course_moodle', null, 'required');
         $mform->addHelpButton('course_moodle', 'course_moodle', 'enrol_saml');
         $mform->setType('course_moodle', PARAM_TEXT);
 
+        $mform->addElement('text', 'saml_course_id', get_string('saml_course_id', 'enrol_saml'), 'size="50"');
+        $mform->addHelpButton('saml_course_id', 'saml_course_id', 'enrol_saml');
+        $mform->addRule('saml_course_id', null, 'required');
+        $mform->setType('saml_course_id', PARAM_TEXT);
 
-
-
-        $mform->addElement('text', 'saml_id', get_string('saml_id', 'enrol_saml'), 'size="20"');
-        $mform->addHelpButton('saml_id', 'saml_id', 'enrol_saml');
-        $mform->addRule('saml_id', null, 'required');
-        https://docs.moodle.org/dev/lib/formslib.php_Form_Definition#Most_Commonly_Used_PARAM_.2A_Types
-        $mform->setType('saml_id', PARAM_ALPHANUMEXT);
+        $anios = array("2022-23"=>"2022-23","2023-24"=>"2023-24", "2024-25"=>"2024-25", "2025-26"=>"2025-26");
+        $mform->addElement('select', 'saml_course_period', get_string('saml_course_period', 'enrol_saml'), $anios);
+        $mform->addRule('saml_course_period', null, 'required');
+        $mform->addHelpButton('saml_course_period', 'saml_course_period', 'enrol_saml');
+        $mform->setType('saml_course_period', PARAM_TEXT);
 
         if (!empty($mappingcourse)) {
-            $mform->setDefault('saml_id', $mappingcourse->saml_id);
+            $mform->setDefault('saml_course_id', $mappingcourse->saml_course_id);
             $mform->setDefault('course_moodle', $cont);
         }
-
-
 
         $mform->addElement('advcheckbox', 'blocked', '', get_string('blocked', 'enrol_saml'));
         $mform->addHelpButton('blocked', 'blocked', 'enrol_saml');
@@ -93,7 +87,6 @@ class course_mapping_editadvanced_form extends moodleform {
 
 
         $this->add_action_buttons(get_string('savechanges'));
-
         $this->set_data($this->_customdata['courses']);
     }
 
@@ -110,15 +103,18 @@ class course_mapping_editadvanced_form extends moodleform {
 
         $new_mapping = (object) $data;
 
-        $select = 'course_id = :course_id AND saml_id = :saml_id';
-        $params = ['course_id' => $new_mapping->course_moodle, 'saml_id' => $new_mapping->saml_id];
+	$select = 'lms_course_id = :lms_course_id AND saml_course_id = :saml_course_id';
 
-        if ($DB->record_exists_select('course_mapping', $select, $params)) {
+	foreach(explode(',', $new_mapping->saml_course_id) as $val )
+	{
+        	$params = ['lms_course_id' => $new_mapping->course_moodle, 'saml_course_id' => $val];
 
-            $errors['course_mapping'] = get_string('coursemappingexists');
-        }
-
+        	if ($DB->record_exists_select('course_mapping', $select, $params)) {
+            		$errors['course_mapping'] = get_string('coursemappingexists');
+		}
+	}
         return $errors;
     }
 
 }
+

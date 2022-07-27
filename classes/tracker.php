@@ -26,7 +26,7 @@ class uploadmapping_tracker {
     /**
      * @var array columns to display.
      */
-    protected $columns = array('line', 'result', 'course_id', 'saml_id');
+    protected $columns = array('line', 'result', 'lms_course_id', 'saml_course_id');
 
     /**
      * @var int row number.
@@ -114,8 +114,8 @@ class uploadmapping_tracker {
         echo html_writer::start_tag('tr', array('class' => 'r' . $this->rownb % 2));
         echo html_writer::tag('td', $line, array('class' => 'c' . $ci++));
         echo html_writer::tag('td', $outcome, array('class' => 'c' . $ci++));
-        echo html_writer::tag('td', isset($data['course_id']) ? $data['course_id'] . ' ' : '', array('class' => 'c' . $ci++));
-        echo html_writer::tag('td', isset($data['saml_id']) ? $data['saml_id'] . ' ' : '', array('class' => 'c' . $ci++));
+        echo html_writer::tag('td', isset($data['lms_course_id']) ? $data['saml_course_id'] . ' ' : '', array('class' => 'c' . $ci++));
+        echo html_writer::tag('td', isset($data['saml_course_id']) ? $data['saml_course_id'] . ' ' : '', array('class' => 'c' . $ci++));
         echo html_writer::end_tag('tr');
         
     }
@@ -133,8 +133,8 @@ class uploadmapping_tracker {
         echo html_writer::start_tag('tr', array('class' => 'heading r' . $this->rownb));
         echo html_writer::tag('th', get_string('csvline', 'tool_uploadcourse'), array('class' => 'c' . $ci++, 'scope' => 'col'));
         echo html_writer::tag('th', get_string('result', 'tool_uploadcourse'), array('class' => 'c' . $ci++, 'scope' => 'col'));
-        echo html_writer::tag('th', get_string('course_id', 'enrol_saml'), array('class' => 'c' . $ci++, 'scope' => 'col'));
-        echo html_writer::tag('th', get_string('saml_id', 'enrol_saml'), array('class' => 'c' . $ci++, 'scope' => 'col'));
+        echo html_writer::tag('th', get_string('lms_course_id', 'enrol_saml'), array('class' => 'c' . $ci++, 'scope' => 'col'));
+        echo html_writer::tag('th', get_string('saml_course_id', 'enrol_saml'), array('class' => 'c' . $ci++, 'scope' => 'col'));
         echo html_writer::end_tag('tr');
     }
 
@@ -150,7 +150,7 @@ class old_mapping_tracker {
     /**
      * @var array columns to display.
      */
-    protected $columns = array('line', 'result', 'course_id', 'saml_id');
+    protected $columns = array('line', 'result', 'lms_course_id', 'saml_course_id');
 
     /**
      * @var int row number.
@@ -237,8 +237,8 @@ class old_mapping_tracker {
         echo html_writer::start_tag('tr', array('class' => 'r' . $this->rownb % 2));
         echo html_writer::tag('td', $line, array('class' => 'c' . $ci++));
         echo html_writer::tag('td', $outcome, array('class' => 'c' . $ci++));
-        echo html_writer::tag('td', isset($data->course_id) ? $data->course_id . ' ' : '', array('class' => 'c' . $ci++));
-        echo html_writer::tag('td', isset($data->saml_id) ? $data->saml_id . ' ' : '', array('class' => 'c' . $ci++));
+        echo html_writer::tag('td', isset($data->lms_course_id) ? $data->lms_course_id . ' ' : '', array('class' => 'c' . $ci++));
+        echo html_writer::tag('td', isset($data->saml_course_id) ? $data->saml_course_id . ' ' : '', array('class' => 'c' . $ci++));
         echo html_writer::end_tag('tr');
         
     }
@@ -256,8 +256,8 @@ class old_mapping_tracker {
         echo html_writer::start_tag('tr', array('class' => 'heading r' . $this->rownb));
         echo html_writer::tag('th', get_string('csvline', 'tool_uploadcourse'), array('class' => 'c' . $ci++, 'scope' => 'col'));
         echo html_writer::tag('th', get_string('result', 'tool_uploadcourse'), array('class' => 'c' . $ci++, 'scope' => 'col'));
-        echo html_writer::tag('th', get_string('course_id', 'enrol_saml'), array('class' => 'c' . $ci++, 'scope' => 'col'));
-        echo html_writer::tag('th', get_string('saml_id', 'enrol_saml'), array('class' => 'c' . $ci++, 'scope' => 'col'));
+        echo html_writer::tag('th', get_string('lms_course_id', 'enrol_saml'), array('class' => 'c' . $ci++, 'scope' => 'col'));
+        echo html_writer::tag('th', get_string('saml_course_id', 'enrol_saml'), array('class' => 'c' . $ci++, 'scope' => 'col'));
         echo html_writer::end_tag('tr');
     }
 

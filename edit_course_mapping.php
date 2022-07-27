@@ -88,25 +88,28 @@ if (!empty($courses)) {
 
         $course = $courses[$keys[$fromform->course_moodle]];
 
-        if (!$mappingid) { //New Course Mapping
-            $fields = [
-                'saml_id' => $fromform->saml_id,
+	if (!$mappingid) { //New Course Mapping
+		foreach (explode(",", $fromform->saml_course_id) as $val)
+		{
+            		$fields = [
+                'saml_course_id' => trim($val),
                 //select devuelve un numero del 0 al ...
                 //ponemos el id del curso al que le corresponda esa posición
-                'course_id' => $course->shortname,
+                'lms_course_id' => $course->shortname,
                 'blocked' => $fromform->blocked,
                 'source' => 0,
                 'creation' => $time
-            ];
-            //new entry in course_mapping table
-            $DB->insert_record('course_mapping', $fields);
+            		];
+            		//new entry in course_mapping table
+	    		$DB->insert_record('course_mapping', $fields);
+		}
         } else {  //Edit Course Mapping
             global $DB;
             $mapping = $DB->get_record('course_mapping', ['id' => $mappingid], '*', MUST_EXIST);
 
 
-            $mapping->saml_id = $fromform->saml_id;
-            $mapping->course_id = $course->shortname;
+            $mapping->saml_course_id = $fromform->saml_course_id;
+            $mapping->lms_course_id = $course->shortname;
             $mapping->blocked = $fromform->blocked;
             $mapping->modified = $time;
             update_course_mapping($mapping);
