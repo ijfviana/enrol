@@ -79,6 +79,7 @@ class course_mapping_editadvanced_form extends moodleform {
         if (!empty($mappingcourse)) {
             $mform->setDefault('saml_course_id', $mappingcourse->saml_course_id);
             $mform->setDefault('course_moodle', $cont);
+	    $mform->setDefault('saml_course_period', $mappingcourse->saml_course_period);
         }
 
         $mform->addElement('advcheckbox', 'blocked', '', get_string('blocked', 'enrol_saml'));
@@ -103,7 +104,8 @@ class course_mapping_editadvanced_form extends moodleform {
 
         $new_mapping = (object) $data;
 
-	$select = 'lms_course_id = :lms_course_id AND saml_course_id = :saml_course_id';
+	//$select = 'lms_course_id = :lms_course_id AND saml_course_id = :saml_course_id';
+	$select = 'saml_course_id = :saml_course_id';
 
 	foreach(explode(',', $new_mapping->saml_course_id) as $val )
 	{
