@@ -96,6 +96,7 @@ if (!empty($courses)) {
                 //select devuelve un numero del 0 al ...
                 //ponemos el id del curso al que le corresponda esa posición
                 'lms_course_id' => $course->shortname,
+		'saml_course_period' => $fromform->saml_course_period,
                 'blocked' => $fromform->blocked,
                 'source' => 0,
                 'creation' => $time
