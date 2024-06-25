@@ -113,6 +113,7 @@ if (!empty($courses)) {
             $mapping->lms_course_id = $course->shortname;
             $mapping->blocked = $fromform->blocked;
             $mapping->modified = $time;
+	    $mapping->saml_course_period = $fromform->saml_course_period;
             update_course_mapping($mapping);
         }
 
